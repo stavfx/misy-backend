@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'sinatra'
-#Dir['../lib/*.rb'].each {|file| require file }
+Dir['../lib/*.rb'].each {|file| require file }
 
-#require 'mongo'
+require 'mongo'
 #puts Gem.loaded_specs["mongo"].version
 
 #mongo_uri = ENV['MONGOLAB_URI']
