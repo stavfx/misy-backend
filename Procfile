@@ -1,1 +1,1 @@
-bundle exec rackup -p 80 config.ru
+web: bundle exec rackup -p 80 config.ru
