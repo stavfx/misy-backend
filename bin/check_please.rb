@@ -1,9 +1,14 @@
 require 'rubygems'
 require 'sinatra'
-# Dir['../lib/*.rb'].each {|file| require file }
+Dir['../lib/*.rb'].each {|file| require file }
 
-# MongoMapper.connection = Mongo::Connection.new('localhost')
-# MongoMapper.database = 'test'
+require 'mongo'
+puts Gem.loaded_specs["mongo"].version
+
+mongo_uri = ENV['MONGOLAB_URI']
+client = Mongo::Client.new(mongo_uri);
+db = client.database
+db.collection_names.each{|name| puts name }
 
 get '/' do
   "Hello World!"
