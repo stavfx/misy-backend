@@ -6,13 +6,13 @@ require 'mongo'
 puts "========================>stav"
 puts Gem.loaded_specs["mongo"].version
 
-#mongo_uri = ENV['MONGOLAB_URI']
-#client = Mongo::Client.new(mongo_uri);
-#db = client.database
-#db.collection_names.each{|name| puts name }
 
 get '/' do
-  "Hello World!"
+  mongo_uri = ENV['MONGOLAB_URI']
+  client = Mongo::Client.new(mongo_uri);
+  db = client.database
+  db.collection_names.each{|name| puts name }
+  "Hello World!\nMongo version: " + Gem.loaded_specs["mongo"].version
 end
 
 
