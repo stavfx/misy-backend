@@ -5,7 +5,7 @@ require 'mongo'
 require 'mongo_mapper'
 
 
-puts Dir['../*']
+puts Dir['../lib/*']
 puts "========================>stav"
 puts Gem.loaded_specs["mongo"].version
 
