@@ -3,8 +3,9 @@ require 'sinatra'
 Dir['../lib/*.rb'].each {|file| require file }
 require 'mongo'
 require 'mongo_mapper'
-require '../lib/service'
 
+
+puts Dir['..']
 puts "========================>stav"
 puts Gem.loaded_specs["mongo"].version
 
@@ -35,4 +36,5 @@ end
 get '/services' do
   # ServiceMng.get_all
   ServiceMng.test
+  "hello"
 end
