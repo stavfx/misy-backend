@@ -11,3 +11,5 @@ class Restaurant
   key :services, Array
   many :menu_items
 end
+
+
