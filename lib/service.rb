@@ -15,7 +15,7 @@ class ServiceMng
   end
 
   def self.get_all
-    puts Service.all
+    Service.all.to_json
   end
 
   def self.test
