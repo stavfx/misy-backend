@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'sinatra'
-Dir['../lib/*.rb'].each do |file|
+Dir['./lib/*.rb'].each do |file|
   puts file
   require file
 end
@@ -9,7 +9,7 @@ require 'mongo_mapper'
 
 
 
-puts Dir['./*']
+puts Dir['./lib']
 puts "_file_"
 puts Dir[__FILE__]
 puts "========================>stav"
