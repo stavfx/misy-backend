@@ -18,6 +18,9 @@ class ServiceMng
     puts Service.all
   end
 
+  def self.test
+    puts "################## hello $$$$$$$$$$$$$$$"
+  end
 end
 
 

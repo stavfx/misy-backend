@@ -3,7 +3,7 @@ require 'sinatra'
 Dir['../lib/*.rb'].each {|file| require file }
 require 'mongo'
 require 'mongo_mapper'
-require '../lib/services'
+require '../lib/service'
 
 puts "========================>stav"
 puts Gem.loaded_specs["mongo"].version
@@ -27,13 +27,12 @@ get '/' do
   "Hello World!\nMongo version: " + Gem.loaded_specs["mongo"].version.to_s
 end
 
-
-post '/services' do
-  ServiceMng.create(params['service'])
-end
+#
+# post '/services' do
+#   ServiceMng.create(params['service'])
+# end
 
 get '/services' do
-  ServiceMng.get_all
+  # ServiceMng.get_all
+  ServiceMng.test
 end
-
-
