@@ -33,5 +33,4 @@ end
 
 get '/services' do
   ServiceMng.get_all
-  "hello"
 end
