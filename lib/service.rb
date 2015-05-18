@@ -18,9 +18,6 @@ class ServiceMng
     Service.all.to_json
   end
 
-  def self.test
-    puts "################## hello $$$$$$$$$$$$$$$"
-  end
 end
 
 

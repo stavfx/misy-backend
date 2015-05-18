@@ -8,6 +8,9 @@ class User
   include MongoMapper::Document
 
   key :_id,           String
+  key :first_name,    String
+  key :last_name,     String
+  key :email,         String
   key :passwordhash,  String
   key :salt,          String
 

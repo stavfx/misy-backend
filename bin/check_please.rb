@@ -28,7 +28,8 @@ end
 
 
 post '/services' do
-  ServiceMng.create(params['name'])
+  p params
+  ServiceMng.create(params['service'])
 end
 
 get '/services' do
