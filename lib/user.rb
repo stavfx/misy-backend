@@ -13,7 +13,7 @@ class User
   key :email,         String
   key :passwordhash,  String
   key :salt,          String
-  key :type,          Integer
+  key :type,          String
 
 end
 
