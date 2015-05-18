@@ -2,7 +2,7 @@ require 'mongo_mapper'
 require 'bcrypt'
 require 'sinatra'
 
-enable :sessions
+
 
 class User
   include MongoMapper::Document
@@ -28,8 +28,6 @@ class UserMng
                 :salt =>  password_salt,
                 :password_hash  =>  password_hash
                 })
-
-    session[:username] = username
   end
 
   def self.exists?(username)

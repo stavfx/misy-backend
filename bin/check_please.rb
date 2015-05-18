@@ -4,7 +4,7 @@ Dir['./lib/*.rb'].each { |file| require file }
 require 'mongo'
 require 'mongo_mapper'
 
-
+enable :sessions
 puts Gem.loaded_specs["mongo"].version
 
 
@@ -19,19 +19,20 @@ MongoMapper.database = db_name
 MongoMapper.database.authenticate(db_name, pw)
 
 get '/' do
-  # mongo_uri = ENV['MONGOLAB_URI']
-  # client = Mongo::Client.new(mongo_uri);
-  # db = client.database
-  # db.collection_names.each{|name| puts name }
   "Hello World!\nMongo version: " + Gem.loaded_specs["mongo"].version.to_s
 end
 
 
-post '/services' do
+post '/api/services' do
   p params
   ServiceMng.create(params['service'])
 end
 
-get '/services' do
+get '/api/services' do
   ServiceMng.get_all
+end
+
+post '/api/register' do
+  session[:username] = username
+  UserMng.register(params[:username],params[:password])
 end
