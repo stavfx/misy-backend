@@ -1,6 +1,6 @@
 require 'mongo_mapper'
 require 'bcrypt'
-require 'sinatra'
+
 
 
 
