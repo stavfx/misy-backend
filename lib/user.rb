@@ -51,7 +51,10 @@ class UserMng
   end
 
   def self.exists?(username)
-    return true unless (User.find(username)).nil?
+    if (User.find(username).nil?)
+      return false
+    end
+    return true
   end
 
 

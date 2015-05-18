@@ -34,6 +34,7 @@ end
 
 post '/api/register' do
 #  session[:username] = username
+  return_message = {}
   if UserMng.register(params)
     return_message[:status] = 'success'
   else
