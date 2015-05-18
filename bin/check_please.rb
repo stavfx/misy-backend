@@ -33,6 +33,23 @@ get '/api/services' do
 end
 
 post '/api/register' do
-  session[:username] = username
-  UserMng.register(params[:username],params[:password])
+#  session[:username] = username
+  if UserMng.register(params)
+    return_message[:status] = 'success'
+  else
+    return_message[:status] = 'fail'
+  end
+  return_message.to_json
+end
+
+
+post '/api/login' do
+  return_message = {}
+  if UserMng.login(params[:username],params[:password])
+    return_message[:status] = 'success'
+  else
+    return_message[:status] = 'fail'
+  end
+
+  return_message.to_json
 end
