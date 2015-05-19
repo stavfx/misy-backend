@@ -35,10 +35,11 @@ end
 post '/api/register' do
 #  session[:username] = username
   return_message = {}
+  p params
   if UserMng.register(params)
-    return_message[:status] = 'success'
+    return_message[:success] = true
   else
-    return_message[:status] = 'fail'
+    return_message[:success] = false
   end
   return_message.to_json
 end
@@ -47,9 +48,9 @@ end
 post '/api/login' do
   return_message = {}
   if UserMng.login(params[:username],params[:password])
-    return_message[:status] = 'success'
+    return_message[:success] = true
   else
-    return_message[:status] = 'fail'
+    return_message[:success] = false
   end
 
   return_message.to_json
