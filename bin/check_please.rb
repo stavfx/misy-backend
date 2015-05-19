@@ -21,7 +21,9 @@ MongoMapper.database.authenticate(db_name, pw)
 
 
 before do
+  puts request.body
   request.body.rewind
+  puts request.body.read
   @request_params = JSON.parse request.body.read
 end
 
