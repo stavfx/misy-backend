@@ -3,6 +3,7 @@ require 'sinatra'
 Dir['./lib/*.rb'].each { |file| require file }
 require 'mongo'
 require 'mongo_mapper'
+require 'json'
 
 enable :sessions
 puts Gem.loaded_specs["mongo"].version
