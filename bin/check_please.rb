@@ -18,14 +18,20 @@ MongoMapper.connection = Mongo::Connection.new(host, port)
 MongoMapper.database = db_name
 MongoMapper.database.authenticate(db_name, pw)
 
+
+before do
+  request.body.rewind
+  @request_params = JSON.parse request.body.read
+end
+
+
 get '/' do
   "Hello World!\nMongo version: " + Gem.loaded_specs["mongo"].version.to_s
 end
 
 
 post '/api/services' do
-  p params
-  ServiceMng.create(params['service'])
+  ServiceMng.create(@request_params['service'])
 end
 
 get '/api/services' do
@@ -35,8 +41,7 @@ end
 post '/api/register' do
 #  session[:username] = username
   return_message = {}
-  p params
-  if UserMng.register(params)
+  if UserMng.register(@request_params)
     return_message[:success] = true
   else
     return_message[:success] = false
@@ -47,7 +52,7 @@ end
 
 post '/api/login' do
   return_message = {}
-  if UserMng.login(params[:username],params[:password])
+  if UserMng.login(@request_params[:username],@request_params[:password])
     return_message[:success] = true
   else
     return_message[:success] = false
