@@ -20,12 +20,10 @@ MongoMapper.database = db_name
 MongoMapper.database.authenticate(db_name, pw)
 
 
-before do
-  puts request.body
-  request.body.rewind
-  puts request.body.read
-  @request_params = JSON.parse request.body.read
-end
+# before do
+#   request.body.rewind
+#   @request_params = JSON.parse request.body.read
+# end
 
 
 get '/' do
@@ -34,7 +32,7 @@ end
 
 
 post '/api/services' do
-  ServiceMng.create(@request_params['service'])
+  ServiceMng.create(params['service'])
 end
 
 get '/api/services' do
@@ -44,7 +42,7 @@ end
 post '/api/register' do
 #  session[:username] = username
   return_message = {}
-  if UserMng.register(@request_params)
+  if UserMng.register(params)
     return_message[:success] = true
   else
     return_message[:success] = false
@@ -55,7 +53,7 @@ end
 
 post '/api/login' do
   return_message = {}
-  if UserMng.login(@request_params[:username],@request_params[:password])
+  if UserMng.login(params[:username],params[:password])
     return_message[:success] = true
   else
     return_message[:success] = false
