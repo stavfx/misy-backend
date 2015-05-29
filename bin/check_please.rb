@@ -1,23 +1,22 @@
 require 'rubygems'
 require 'sinatra'
-Dir['./lib/*.rb'].each { |file| require file }
+Dir['../lib/*.rb'].each { |file| require file }
 require 'mongo'
 require 'mongo_mapper'
 require 'json'
 
 enable :sessions
-puts Gem.loaded_specs["mongo"].version
+set :bind, '0.0.0.0'
+#set :port, 80
+
+# MongoMapper.connection = Mongo::Connection.new(host, port)
+# MongoMapper.database = db_name
+# MongoMapper.database.authenticate(db_name, pw)
+
+MongoMapper.connection = Mongo::Connection.new('localhost')
+MongoMapper.database = 'misy'
 
 
-regex_match = /.*:\/\/(.*):(.*)@(.*):(.*)\//.match(ENV['MONGOLAB_URI'])
-host = regex_match[3]
-port = regex_match[4]
-db_name = regex_match[1]
-pw = regex_match[2]
-
-MongoMapper.connection = Mongo::Connection.new(host, port)
-MongoMapper.database = db_name
-MongoMapper.database.authenticate(db_name, pw)
 
 
 # before do
