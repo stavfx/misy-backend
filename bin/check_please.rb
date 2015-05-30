@@ -19,10 +19,10 @@ MongoMapper.database = 'misy'
 
 
 
-# before do
-#   request.body.rewind
-#   @request_params = JSON.parse request.body.read
-# end
+before do
+  request.body.rewind
+  @request_params = JSON.parse request.body.read
+end
 
 
 get '/' do
@@ -31,7 +31,9 @@ end
 
 
 post '/api/services' do
-  ServiceMng.create(params['service'])
+  puts @request_params
+  # params = JSON.parse(request.body.read)
+  # ServiceMng.create(params['service'])
 end
 
 get '/api/services' do
@@ -41,7 +43,8 @@ end
 post '/api/register' do
 #  session[:username] = username
   return_message = {}
-  if UserMng.register(params)
+  params = JSON.parse(request.body.read)
+  if UserMng.register([params])
     return_message[:success] = true
   else
     return_message[:success] = false
