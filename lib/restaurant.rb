@@ -1,5 +1,5 @@
 require 'mongo_mapper'
-
+require File.join(File.dirname(__FILE__), './utils')
 
 class Restaurant
   include MongoMapper::Document
@@ -26,33 +26,53 @@ end
 class RestaurantMng
 
   def self.create(params)
-    menu_items = []
-    params["menu_items"].each do |item|
-      menu_items << MenuItem.new(
-                                  :name => item["name"],
-                                  :description => item["description"],
-                                  :price => item["price"]
-                                )
+    res = Restaurant.create({"admin_user_id" => params["admin_user_id"]})
+    res.save
+    return res._id
+  end
 
+
+  def self.update(params)
+    res = Restaurant.find(params["_id"])
+    if res.nil?
+      return_message(false,{},"No restaurant was found with id #{params["_id"]}")
+    else
+      data = {}
+      menu_items = []
+      if !params["menu_items"].nil?
+        params["menu_items"].each do |item|
+          menu_items << MenuItem.new(
+              :name => item["name"],
+              :description => item["description"],
+              :price => item["price"]
+          )
+
+        end
+      end
+
+      res.update_attributes(
+                              :name          => params["name"],
+                              :city          => params["city"],
+                              :address       => params["address"],
+                              :p_number      => params["p_number"],
+                              :desc          => params["desc"],
+                              :services      => params["services"],
+                              :menu_items    => menu_items
+                          )
+      res.save
+      data["restaurant_id"] = res._id
+      return_message(true,data)
     end
-    Restaurant.create({
-                        :name          => params["name"],
-                        :admin_user_id => params["admin_user_id"],
-                        :city          => params["city"],
-                        :address       => params["address"],
-                        :p_number      => params["p_number"],
-                        :desc          => params["desc"],
-                        :services      => params["services"],
-                        :menu_items    => menu_items
-                      })
-    return true
 
   end
+
 
   def self.get_all(city = nil)
-    return Restaurant.all(:city => city) unless city.nil?
-    Restaurant.all
+    return return_message(true,Restaurant.all(:city => city)) unless city.nil?
+    return_message(true,Restaurant.all)
   end
+
+
 
 
 

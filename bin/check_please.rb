@@ -1,7 +1,10 @@
+Dir['../lib/*.rb'].each do |file|
+  puts file
+  require file
+end
 require 'rubygems'
 require 'sinatra'
 require "sinatra/cookies"
-Dir['../lib/*.rb'].each { |file| require file }
 require 'mongo'
 require 'mongo_mapper'
 require 'json'
@@ -17,13 +20,7 @@ set :bind, '0.0.0.0'
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
 
-def return_message(success,data={},error_code=0)
-  message = {}
-  message[:success] = success
-  message[:data] = data
-  message[:errorCode] = error_code
-  return message.to_json
-end
+
 
 
 before do
@@ -40,11 +37,11 @@ end
 
 
 get '/api/restaurants' do
-  return_message(true,RestaurantMng.get_all(@request_params["city"]),200)
+  RestaurantMng.get_all(@params["city"])
 end
 
-post '/api/restaurants' do
-  return_message(RestaurantMng.create(@request_params))
+put '/api/restaurants' do
+  RestaurantMng.update(@request_params)
 end
 
 post '/api/services' do
@@ -52,25 +49,26 @@ post '/api/services' do
 end
 
 get '/api/services' do
-  return_message(true,ServiceMng.get_all,200)
+  ServiceMng.get_all
 end
 
 post '/api/register' do
-  return_message(UserMng.register(@request_params))
+  UserMng.register(@request_params)
 end
 
 
 post '/api/login' do
-  if UserMng.login(@request_params["username"],@request_params["password"])
+  msg = UserMng.login(@request_params["username"],@request_params["password"])
+  if msg["success"]
     cookies["username"] = @request_params["username"]
-    p cookies
-    return_message(true)
   else
     cookies.delete("username")
-    return_message(false)
   end
+  msg
 end
+
 
 post '/api/logout' do
   cookies.delete("username")
+  return_message(true)
 end

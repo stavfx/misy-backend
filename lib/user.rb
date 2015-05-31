@@ -1,5 +1,7 @@
 require 'mongo_mapper'
 require 'bcrypt'
+require File.join(File.dirname(__FILE__), './restaurant')
+require File.join(File.dirname(__FILE__), './utils')
 
 
 
@@ -22,10 +24,11 @@ class UserMng
 
   def self.register(params)
     if(!UserMng.exists?(params["username"]))
+      data = {}
       password_salt = BCrypt::Engine.generate_salt
       password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
-      User.create({
+      user = User.create({
                       :_id  =>  params["username"],
                       :first_name => params["first_name"],
                       :last_name => params["last_name"],
@@ -34,20 +37,32 @@ class UserMng
                       :password_hash  =>  password_hash,
                       :type => params["type"]
                   })
-      return true
+      user.save
+      data["user_id"] = user._id
+      # If this is a Restaurant admin than create a restaurant
+      if user.type == 2
+        data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
+      end
+      return_message(true,data)
+    else
+      return_message(false)
     end
-    return false
+
   end
+
 
   def self.login(username, password)
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
-        return true
+        return_message(true)
+      else
+        return_message(false,{},"Wrong password!")
       end
-      return false
+    else
+      return_message(false,{},"Can't find user #{username}")
     end
-    return false
   end
+
 
   def self.exists?(username)
     if (User.find(username).nil?)
