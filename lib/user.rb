@@ -21,18 +21,18 @@ end
 class UserMng
 
   def self.register(params)
-    if(!UserMng.exists?(params[:username]))
+    if(!UserMng.exists?(params["username"]))
       password_salt = BCrypt::Engine.generate_salt
-      password_hash = BCrypt::Engine.hash_secret(params[:password], password_salt)
+      password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
       User.create({
-                      :_id  =>  params[:username],
-                      :first_name => params[:first_name],
-                      :last_name => params[:last_name],
-                      :email => params[:email],
+                      :_id  =>  params["username"],
+                      :first_name => params["first_name"],
+                      :last_name => params["last_name"],
+                      :email => params["email"],
                       :salt =>  password_salt,
                       :password_hash  =>  password_hash,
-                      :type => params[:type]
+                      :type => params["type"]
                   })
       return true
     end
@@ -42,7 +42,6 @@ class UserMng
   def self.login(username, password)
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
-        #session[:username] = params[:username]
         return true
       end
       return false

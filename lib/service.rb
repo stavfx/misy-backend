@@ -3,20 +3,22 @@ require 'mongo_mapper'
 class Service
   include MongoMapper::Document
 
-  key :name,    String
+  key :_id,    String
 
 end
 
 
 class ServiceMng
 
-  def self.create(name)
-    Service.create({:name => name})
+  def self.create(service)
+    Service.create({:_id => service})
   end
 
   def self.get_all
-    Service.all.to_json
+    Service.all
   end
+
+
 
 end
 

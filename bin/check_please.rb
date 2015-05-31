@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+require "sinatra/cookies"
 Dir['../lib/*.rb'].each { |file| require file }
 require 'mongo'
 require 'mongo_mapper'
@@ -16,50 +17,60 @@ set :bind, '0.0.0.0'
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
 
-
+def return_message(success,data={},error_code=0)
+  message = {}
+  message[:success] = success
+  message[:data] = data
+  message[:errorCode] = error_code
+  return message.to_json
+end
 
 
 before do
   request.body.rewind
-  @request_params = JSON.parse request.body.read
+  json_params = request.body.read
+  @request_params = {}
+  @request_params = JSON.parse json_params unless (json_params.nil? || json_params.empty?)
 end
 
 
 get '/' do
-  "Hello World!\nMongo version: " + Gem.loaded_specs["mongo"].version.to_s
+  "Hi #{cookies["username"]}, Welcome to Misy! :)"
 end
 
 
+get '/api/restaurants' do
+  return_message(true,RestaurantMng.get_all(@request_params["city"]),200)
+end
+
+post '/api/restaurants' do
+  return_message(RestaurantMng.create(@request_params))
+end
+
 post '/api/services' do
-  puts @request_params
-  # params = JSON.parse(request.body.read)
-  # ServiceMng.create(params['service'])
+  ServiceMng.create(@request_params['service'])
 end
 
 get '/api/services' do
-  ServiceMng.get_all
+  return_message(true,ServiceMng.get_all,200)
 end
 
 post '/api/register' do
-#  session[:username] = username
-  return_message = {}
-  params = JSON.parse(request.body.read)
-  if UserMng.register([params])
-    return_message[:success] = true
-  else
-    return_message[:success] = false
-  end
-  return_message.to_json
+  return_message(UserMng.register(@request_params))
 end
 
 
 post '/api/login' do
-  return_message = {}
-  if UserMng.login(params[:username],params[:password])
-    return_message[:success] = true
+  if UserMng.login(@request_params["username"],@request_params["password"])
+    cookies["username"] = @request_params["username"]
+    p cookies
+    return_message(true)
   else
-    return_message[:success] = false
+    cookies.delete("username")
+    return_message(false)
   end
+end
 
-  return_message.to_json
+post '/api/logout' do
+  cookies.delete("username")
 end
