@@ -14,8 +14,6 @@ set :bind, '0.0.0.0'
 set :port, 80
 
 
-# MongoMapper.database = db_name
-
 
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
