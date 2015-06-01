@@ -11,7 +11,7 @@ require 'json'
 
 enable :sessions
 set :bind, '0.0.0.0'
-set :port, 8080
+set :port, 80
 
 # MongoMapper.connection = Mongo::Connection.new(host, port)
 # MongoMapper.database = db_name
