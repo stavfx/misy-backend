@@ -15,7 +15,7 @@ set :port, 80
 
 # MongoMapper.connection = Mongo::Connection.new(host, port)
 # MongoMapper.database = db_name
-# MongoMapper.database.authenticate(db_name, pw)
+
 
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
