@@ -20,6 +20,7 @@ MongoMapper.database = 'misy'
 
 
 before do
+  content_type :json
   request.body.rewind
   json_params = request.body.read
   @request_params = {}

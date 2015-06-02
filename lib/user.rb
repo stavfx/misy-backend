@@ -23,13 +23,13 @@ end
 class UserMng
 
   def self.register(params)
-    if(!UserMng.exists?(params["username"]))
+    if(!UserMng.exists?(params["_id"]))
       data = {}
       password_salt = BCrypt::Engine.generate_salt
       password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
       user = User.create({
-                      :_id  =>  params["username"],
+                      :_id  =>  params["_id"],
                       :first_name => params["first_name"],
                       :last_name => params["last_name"],
                       :email => params["email"],

@@ -20,6 +20,7 @@ class MenuItem
   key :name,        String
   key :description, String
   key :price ,      Integer
+  key :recommended, String
 end
 
 
@@ -44,7 +45,8 @@ class RestaurantMng
           menu_items << MenuItem.new(
               :name => item["name"],
               :description => item["description"],
-              :price => item["price"]
+              :price => item["price"],
+              :recommended => item["recommended"]
           )
 
         end
