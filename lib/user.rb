@@ -38,7 +38,7 @@ class UserMng
                       :type => params["type"]
                   })
       user.save
-      data["user_id"] = user._id
+      data["_id"] = user._id
       # If this is a Restaurant admin than create a restaurant
       if user.type == 2
         data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
