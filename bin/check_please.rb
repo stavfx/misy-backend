@@ -32,6 +32,9 @@ get '/' do
   "Hi #{cookies["username"]}, Welcome to Misy! :)"
 end
 
+get '/testCookies' do
+	cookies.to_json
+end
 
 get '/api/restaurants' do
   RestaurantMng.get_all(@params["city"])
