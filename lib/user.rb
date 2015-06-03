@@ -37,7 +37,7 @@ class UserMng
                   })
       user.save
 
-      data["_id"] = user._id
+      data["user_id"] = user._id
       # If this is a Restaurant admin than create a restaurant
       if user.type == 2
         data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
@@ -55,7 +55,7 @@ class UserMng
   def self.login(username, password)
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
-        data = {"_id" => username}
+        data = {"user_id" => username}
         data.merge!(get_opening_data)
         return_message(true, data)
       else
