@@ -9,7 +9,7 @@ require File.join(File.dirname(__FILE__), './utils')
 class User
   include MongoMapper::Document
 
-  key :id,           String
+  key :_id,           String
   key :first_name,    String
   key :last_name,     String
   key :passwordhash,  String
@@ -28,7 +28,7 @@ class UserMng
       password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
       user = User.create({
-                      :id  =>  params["id"],
+                      :_id  =>  params["id"],
                       :first_name => params["first_name"],
                       :last_name => params["last_name"],
                       :salt =>  password_salt,

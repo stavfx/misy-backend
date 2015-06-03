@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), './utils')
 class Service
   include MongoMapper::Document
 
-  key :id,    String
+  key :_id,    String
 
 end
 
@@ -12,7 +12,7 @@ end
 class ServiceMng
 
   def self.create(service)
-    Service.create({:id => service})
+    Service.create({:_id => service})
     return_message(true)
   end
 
