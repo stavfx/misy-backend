@@ -10,7 +10,6 @@ class Restaurant
   key :address,       String
   key :p_number,      String
   key :desc,          String
-  key :services,      Array
   many :menu_items
 end
 
@@ -58,7 +57,6 @@ class RestaurantMng
                               :address       => params["address"],
                               :p_number      => params["p_number"],
                               :desc          => params["desc"],
-                              :services      => params["services"],
                               :menu_items    => menu_items
                           )
       res.save
