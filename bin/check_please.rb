@@ -32,7 +32,7 @@ get '/' do
   "Hi #{cookies["username"]}, Welcome to Misy! :)"
 end
 
-get '/testCookies' do
+get '/api/testCookies' do
 	cookies.to_json
 end
 
