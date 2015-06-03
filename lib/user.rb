@@ -12,7 +12,6 @@ class User
   key :_id,           String
   key :first_name,    String
   key :last_name,     String
-  key :email,         String
   key :passwordhash,  String
   key :salt,          String
   key :type,          Integer
@@ -32,7 +31,6 @@ class UserMng
                       :_id  =>  params["_id"],
                       :first_name => params["first_name"],
                       :last_name => params["last_name"],
-                      :email => params["email"],
                       :salt =>  password_salt,
                       :password_hash  =>  password_hash,
                       :type => params["type"]
