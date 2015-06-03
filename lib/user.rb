@@ -9,7 +9,7 @@ require File.join(File.dirname(__FILE__), './utils')
 class User
   include MongoMapper::Document
 
-  key :_id,           String
+  key :id,           String
   key :first_name,    String
   key :last_name,     String
   key :passwordhash,  String
@@ -22,13 +22,13 @@ end
 class UserMng
 
   def self.register(params)
-    if(!UserMng.exists?(params["_id"]))
+    if(!UserMng.exists?(params["id"]))
       data = {}
       password_salt = BCrypt::Engine.generate_salt
       password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
       user = User.create({
-                      :_id  =>  params["_id"],
+                      :id  =>  params["id"],
                       :first_name => params["first_name"],
                       :last_name => params["last_name"],
                       :salt =>  password_salt,
