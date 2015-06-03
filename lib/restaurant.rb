@@ -13,6 +13,7 @@ class Restaurant
   many :menu_items
 end
 
+
 class MenuItem
   include MongoMapper::EmbeddedDocument
 
@@ -20,6 +21,13 @@ class MenuItem
   key :description, String
   key :price ,      Integer
   key :recommended, String
+end
+
+
+class City
+  include MongoMapper::Document
+
+  key :_id, String
 end
 
 
@@ -73,6 +81,9 @@ class RestaurantMng
   end
 
 
+  def self.get_all_cities
+    return_message(true,City.all)
+  end
 
 
 

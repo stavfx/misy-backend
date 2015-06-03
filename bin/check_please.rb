@@ -37,38 +37,43 @@ get '/api/testCookies' do
 end
 
 get '/api/restaurants' do
-  RestaurantMng.get_all(@params["city"])
+  RestaurantMng.get_all(@params["city"]).to_json
 end
 
 put '/api/restaurants' do
-  RestaurantMng.update(@request_params)
+  RestaurantMng.update(@request_params).to_json
 end
 
 post '/api/services' do
-  ServiceMng.create(@request_params['service'])
+  ServiceMng.create(@request_params['service']).to_json
 end
 
 get '/api/services' do
-  ServiceMng.get_all
+  ServiceMng.get_all.to_json
 end
 
 post '/api/register' do
-  UserMng.register(@request_params)
+  msg = UserMng.register(@request_params)
+  if msg["success"]
+    cookies["username"] = @request_params["_id"]
+  end
+  msg.to_json
 end
 
 
 post '/api/login' do
-  msg = UserMng.login(@request_params["username"],@request_params["password"])
+  msg = UserMng.login(@request_params["_id"],@request_params["password"])
   if msg["success"]
-    cookies["username"] = @request_params["username"]
+    cookies["username"] = @request_params["_id"]
   else
     cookies.delete("username")
   end
-  msg
+  msg.to_json
 end
 
 
 post '/api/logout' do
   cookies.delete("username")
-  return_message(true)
+  return_message(true).to_json
 end
+
