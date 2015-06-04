@@ -41,9 +41,9 @@ class RestaurantMng
 
 
   def self.update(params)
-    res = Restaurant.find(params["_id"])
+    res = Restaurant.find(params["id"])
     if res.nil?
-      return_message(false,{},"No restaurant was found with id #{params["_id"]}")
+      return_message(false,{},"No restaurant was found with id #{params["id"]}")
     else
       data = {}
       menu_items = []

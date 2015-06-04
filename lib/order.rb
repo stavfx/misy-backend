@@ -8,11 +8,14 @@ class Order
   key :user_id,         String
   key :table_num,       Integer
   key :menu_items,      Array
-  key :services,        Array
+  key :services,        Array # Services / MenuItems
   key :active,          Boolean
   key :dining_session,  Integer
 
 end
+
+# get\post_dish
+# get\post_service
 
 
 class OrderMng
@@ -30,7 +33,7 @@ class OrderMng
                      :dining_session  => params["dining_session"]
                  })
     order.save
-    data["_id"] = order._id
+    data["order_id"] = order._id
 
   end
 
