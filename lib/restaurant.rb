@@ -86,6 +86,13 @@ class RestaurantMng
   end
 
 
+  # return field "recommend" for menu item "id"
+  def self.getRecommendMenuItem(id)
+    menuItems=MenuItem.where(:_id => id.to_s).fields(:recommend).collect(&:recommend)
+    return menuItems
+  end
+
+
 
 end
 
