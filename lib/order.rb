@@ -25,7 +25,7 @@ class OrderMng
 
   def self.create(params)
     if params["dining_session"].nil?
-      params["dining_session"] = ::Base64.encode64(params.to_s+DateTime.now)
+      params["dining_session"] = ::Base64.encode64(params.to_s+DateTime.now.to_s)
     end
     order = Order.create({
                      :restaurant_id   => params["restaurant_id"],
