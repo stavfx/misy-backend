@@ -10,7 +10,7 @@ class Order
   key :user_id,         String
   key :table_num,       Integer
   key :menu_items,      Array
-  key :services,        Array
+  key :service,         String
   key :state,           Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
 
@@ -32,7 +32,7 @@ class OrderMng
                      :user_id         => params["user_id"],
                      :table_num       => params["table_num"],
                      :menu_items      => params["menu_items"],
-                     :services        => params["services"],
+                     :service         => params["service"],
                      :state           => params["state"],
                      :dining_session  => params["dining_session"]
                  })
@@ -41,8 +41,8 @@ class OrderMng
     return_message(true,data)
   end
 
-  def get_services_orders()
-    Service.all({:services => { $exists => true}, :services => {$not => {$size => 0}}})
+  def get_service_orders()
+    Service.all({:service => { $exists => true}})
   end
 
   # return all menu items ids of users who ordered in restaurant "restid"

@@ -69,9 +69,9 @@ def order(request_params,cookies)
   return msg
 end
 
-post '/api/orders/services' do
+post '/api/orders/service' do
   msg = order(@request_params,cookies)
-  cookies.delete("dining_session") if (!@request_params["services"].nil?) && @request_params["services"].include?("check")
+  cookies.delete("dining_session") if (!@request_params["service"].nil?) && @request_params["services"].eql?("check")
   msg.to_json
 end
 
@@ -80,7 +80,7 @@ post '/api/orders/dishes' do
 end
 
 get '/api/orders/services' do
-  OrderMng.get_services_orders().to_json
+  OrderMng.get_service_orders().to_json
 end
 get '/api/orders/dishes' do
   OrderMng.get_dish_orders().to_json

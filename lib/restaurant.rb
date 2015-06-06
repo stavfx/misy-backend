@@ -87,7 +87,8 @@ class RestaurantMng
 
 
   def self.get_all_cities
-    return_message(true,City.all)
+    City.all.serializable_hash
+    return_message(true,)
   end
 
 
