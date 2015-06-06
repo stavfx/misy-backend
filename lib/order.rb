@@ -1,5 +1,5 @@
 require 'mongo_mapper'
-require 'bcrypt'
+require 'base64'
 require 'date'
 require File.join(File.dirname(__FILE__), './utils')
 
@@ -14,9 +14,6 @@ class Order
   key :active,          Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
 
-  def serializable_hash(options = {})
-    super({:except => :dining_session}.merge(options))
-  end
 
 end
 
@@ -27,9 +24,8 @@ end
 class OrderMng
 
   def self.create(params)
-    data = {}
     if params["dining_session"].nil?
-      params["dining_session"] = BCrypt::Engine.hash_secret(params.to_s+DateTime.now)
+      params["dining_session"] = ::Base64.encode64(params.to_s+DateTime.now)
     end
     order = Order.create({
                      :restaurant_id   => params["restaurant_id"],

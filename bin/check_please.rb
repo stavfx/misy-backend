@@ -54,6 +54,8 @@ post '/api/order' do
   @request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
   msg = OrderMng.create(@request_params)
   cookies["dining_session"] = msg["dining_session"] if cookies["dining_session"].nil?
+  cookies.delete("dining_session") if (!@request_params["services"].nil?) && @request_params["services"].include?("check")
+  msg.to_json
 end
 
 post '/api/register' do
