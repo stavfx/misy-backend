@@ -12,10 +12,13 @@ class User
   key :_id,           String
   key :first_name,    String
   key :last_name,     String
-  key :passwordhash,  String
+  key :password_hash,  String
   key :salt,          String
   key :type,          Integer
 
+  def serializable_hash(options = {})
+    super({:except => [:password_hash,:salt]}.merge(options))
+  end
 end
 
 
@@ -23,7 +26,6 @@ class UserMng
 
   def self.register(params)
     if(!UserMng.exists?(params["id"]))
-      data = {}
       password_salt = BCrypt::Engine.generate_salt
       password_hash = BCrypt::Engine.hash_secret(params["password"], password_salt)
 
@@ -37,7 +39,7 @@ class UserMng
                   })
       user.save
 
-      data["user_id"] = user._id
+      data = {"user" => user.serializable_hash}
       # If this is a Restaurant admin than create a restaurant
       if user.type == 2
         data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
@@ -55,7 +57,7 @@ class UserMng
   def self.login(username, password)
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
-        data = {"user" => user}
+        data = {"user" => user.serializable_hash}
         data.merge!(get_opening_data)
         return_message(true, data)
       else
