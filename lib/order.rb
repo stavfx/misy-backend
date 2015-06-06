@@ -41,9 +41,35 @@ class OrderMng
     return_message(true,data)
   end
 
+  def self.update(params)
+    order = Order.find(params["id"])
+    if order.nil?
+      return_message(false,{},"No Order was found with id #{params["id"]}")
+    else
+      if (!order.service.empty?) && order.menu_items.empty? && params["state"] == 2
+        order.destroy
+        data = {}
+      else
+        order.update_attributes(
+            :restarant_id   => params["restaurant_id"],
+            :user_id         => params["user_id"],
+            :table_num       => params["table_num"],
+            :menu_items      => params["menu_items"],
+            :service         => params["service"],
+            :state           => params["state"]
+        )
+        order.save
+        data = order.serializable_hash
+      end
+      return_message(true,data)
+    end
+  end
+
   def self.get_orders(res_id)
-    services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}})
-    dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}})
+    services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}}, :state =>
+    { :$not => 2})
+    dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}, :state =>
+    { :$not => 2})
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 

@@ -88,7 +88,10 @@ get '/api/orders' do
   else
     return_message(false,{},'Not an admin user!').to_json
   end
+end
 
+put '/api/orders' do
+  OrderMng.update(@request_params).to_json
 end
 
 get '/api/orders/dishes' do
