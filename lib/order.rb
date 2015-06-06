@@ -41,7 +41,7 @@ class OrderMng
     return_message(true,data)
   end
 
-  def self.get_service_orders(res_id)
+  def self.get_services_orders(res_id)
     p res_id
     Service.all({:_id => res_id, :service => { $exists => true}})
   end
