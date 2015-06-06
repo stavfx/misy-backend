@@ -46,7 +46,8 @@ class OrderMng
     if order.nil?
       return_message(false,{},"No Order was found with id #{params["id"]}")
     else
-      if (!order.service.nil?) && params["state"] == 2
+      puts "State = #{params["state"]}"
+      if (!order.service.nil?) && params["state"].eql?('2')
         order.destroy
       else
         order.update_attributes(
