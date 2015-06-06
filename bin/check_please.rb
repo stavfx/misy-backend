@@ -1,7 +1,4 @@
-Dir['../lib/*.rb'].each do |file|
-  puts file
-  require file
-end
+Dir['../lib/*.rb'].each { |file| require file }
 require 'rubygems'
 require 'sinatra'
 require "sinatra/cookies"
@@ -55,6 +52,7 @@ end
 post '/api/register' do
   msg = UserMng.register(@request_params)
   if msg["success"]
+    puts "Success #{@request_params["id"]}"
     cookies["username"] = @request_params["id"]
   end
   msg.to_json
@@ -64,6 +62,7 @@ end
 post '/api/login' do
   msg = UserMng.login(@request_params["id"],@request_params["password"])
   if msg["success"]
+    puts "Success #{@request_params["id"]}"
     cookies["username"] = @request_params["id"]
   else
     cookies.delete("username")
