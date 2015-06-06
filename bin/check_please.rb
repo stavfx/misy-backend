@@ -50,7 +50,7 @@ get '/api/services' do
   ServiceMng.get_all.to_json
 end
 
-post '/api/order' do
+post '/api/order/service' do
   @request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
   msg = OrderMng.create(@request_params)
   cookies["dining_session"] = msg["dining_session"] if cookies["dining_session"].nil?
