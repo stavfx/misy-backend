@@ -5,6 +5,7 @@ require "sinatra/cookies"
 require 'mongo'
 require 'mongo_mapper'
 require 'json'
+require 'bcrypt'
 
 enable :sessions
 set :bind, '0.0.0.0'
@@ -52,7 +53,7 @@ end
 post '/api/register' do
   msg = UserMng.register(@request_params)
   if msg[:success]
-    cookies["username"] = @request_params["id"]
+    cookies["session"] = BCrypt::Engine.hash_secret(@request_params["id"])
   end
   msg.to_json
 end
@@ -61,16 +62,16 @@ end
 post '/api/login' do
   msg = UserMng.login(@request_params["id"],@request_params["password"])
   if msg[:success]
-    cookies["username"] = @request_params["id"]
+    cookies["session"] = BCrypt::Engine.hash_secret(@request_params["id"])
   else
-    cookies.delete("username")
+    cookies.delete("session")
   end
   msg.to_json
 end
 
 
 post '/api/logout' do
-  cookies.delete("username")
+  cookies.delete("session")
   return_message(true).to_json
 end
 
