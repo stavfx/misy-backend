@@ -80,7 +80,9 @@ post '/api/orders/dishes' do
 end
 
 get '/api/orders/services' do
-  OrderMng.get_service_orders().to_json
+  user = get_user_from_session(cookies)
+  res_id = RestaurantMng.get_restaurant_by_user(user)[:data]["id"]
+  OrderMng.get_service_orders(res_id).to_json
 end
 get '/api/orders/dishes' do
   OrderMng.get_dish_orders().to_json
