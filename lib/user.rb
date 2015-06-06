@@ -60,7 +60,7 @@ class UserMng
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
         data = {"user" => user.serializable_hash}
-        admin_user = (user["type"] == 2) ? user["id"] : nil
+        admin_user = (user.type == 2) ? user._id : nil
         data.merge!(get_opening_data(admin_user))
         return_message(true, data)
       else
