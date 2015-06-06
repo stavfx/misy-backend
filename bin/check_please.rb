@@ -25,6 +25,11 @@ before do
   @request_params = JSON.parse json_params unless (json_params.nil? || json_params.empty?)
 end
 
+def get_user_from_session(cookies)
+  return nil if (cookies.nil? || cookies["session"].nil?)
+  ::Base64.decode64(cookies["session"])
+end
+
 
 get '/' do
   "Hi #{cookies["username"]}, Welcome to Misy! :)"
@@ -50,18 +55,31 @@ get '/api/services' do
   ServiceMng.get_all.to_json
 end
 
-post '/api/order/service' do
-  @request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
-  msg = OrderMng.create(@request_params)
+def order(request_params,cookies)
+  username = get_user_from_session(cookies)
+  return return_message(false,{},'Session not found') if username.nil?s
+  request_params["user_id"] = username
+  request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
+  msg = OrderMng.create(request_params)
   cookies["dining_session"] = msg[:data]["dining_session"] if cookies["dining_session"].nil?
+  return msg
+end
+
+post '/api/orders/services' do
+  msg = order(@request_params,cookies)
   cookies.delete("dining_session") if (!@request_params["services"].nil?) && @request_params["services"].include?("check")
   msg.to_json
 end
 
-post '/api/order/dish' do
-  @request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
-  msg = OrderMng.create(@request_params)
-  cookies["dining_session"] = msg[:data]["dining_session"] if cookies["dining_session"].nil?
+post '/api/orders/dishes' do
+  order(@request_params,cookies).to_json
+end
+
+get '/api/orders/services' do
+  OrderMng.get_services_orders().to_json
+end
+get '/api/orders/dishes' do
+  OrderMng.get_dish_orders().to_json
 end
 
 post '/api/register' do
@@ -88,4 +106,5 @@ post '/api/logout' do
   cookies.delete("session")
   return_message(true).to_json
 end
+
 

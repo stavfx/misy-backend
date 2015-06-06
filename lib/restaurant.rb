@@ -80,6 +80,10 @@ class RestaurantMng
     return_message(true,Restaurant.all)
   end
 
+  def self.get_restaurant_by_user(user)
+    return return_message(true,Restaurant.where(:admin_user_id => user))
+  end
+
 
   def self.get_all_cities
     return_message(true,City.all)

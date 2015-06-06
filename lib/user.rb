@@ -40,12 +40,14 @@ class UserMng
       user.save
 
       data = {"user" => user.serializable_hash}
+      admin_user = nil
       # If this is a Restaurant admin than create a restaurant
       if user.type == 2
+        admin_user = user._id
         data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
       end
 
-      data.merge!(get_opening_data)
+      data.merge!(get_opening_data(admin_user))
       return_message(true,data)
     else
       return_message(false)
@@ -58,7 +60,8 @@ class UserMng
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
         data = {"user" => user.serializable_hash}
-        data.merge!(get_opening_data)
+        admin_user = (user["type"] == 2) ? user["id"] : nil
+        data.merge!(get_opening_data(admin_user))
         return_message(true, data)
       else
         return_message(false,{},"Wrong password!")

@@ -41,6 +41,10 @@ class OrderMng
     return_message(true,data)
   end
 
+  def get_services_orders()
+    Service.all({:services => { $exists => true}, :services => {$not => {$size => 0}}})
+  end
+
   # return all menu items ids of users who ordered in restaurant "restid"
   def self.getAllUsersItemsByRestID(restid=nil)
     # get ids of all users who ordered in restaurant "restid"
