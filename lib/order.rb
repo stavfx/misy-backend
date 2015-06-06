@@ -48,7 +48,6 @@ class OrderMng
     else
       if (!order.service.nil?) && params["state"] == 2
         order.destroy
-        data = {}
       else
         order.update_attributes(
             :restaurant_id   => params["restaurant_id"],
@@ -59,9 +58,8 @@ class OrderMng
             :state           => params["state"]
         )
         order.save
-        data = order.serializable_hash
       end
-      return_message(true,data)
+      get_orders(order.restaurant_id)
     end
   end
 
