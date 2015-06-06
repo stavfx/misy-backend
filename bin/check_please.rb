@@ -61,7 +61,7 @@ end
 
 def order(request_params,cookies)
   username = get_user_from_session(cookies)
-  return return_message(false,{},'Session not found') if username.nil?s
+  return return_message(false,{},'Session not found') if username.nil?
   request_params["user_id"] = username
   request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
   msg = OrderMng.create(request_params)
