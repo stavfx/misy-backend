@@ -87,7 +87,9 @@ class RestaurantMng
 
 
   def self.get_all_cities
-    return_message(true,City.all)
+    city_arr = []
+    City.all.each { |doc| city_arr << doc.id }
+    return_message(true,city_arr)
   end
 
 
