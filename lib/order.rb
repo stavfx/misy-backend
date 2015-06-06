@@ -11,7 +11,7 @@ class Order
   key :table_num,       Integer
   key :menu_items,      Array
   key :services,        Array
-  key :active,          Integer # 0 - active, 1 - not active, 2 - archived
+  key :state,           Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
 
 
@@ -33,7 +33,7 @@ class OrderMng
                      :table_num       => params["table_num"],
                      :menu_items      => params["menu_items"],
                      :services        => params["services"],
-                     :active          => params["active"],
+                     :state           => params["state"],
                      :dining_session  => params["dining_session"]
                  })
     order.save
