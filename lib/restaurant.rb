@@ -83,7 +83,7 @@ class RestaurantMng
 
   def self.get_restaurant_by_user(user)
     puts "get_restaurant_by_user: user => #{user}"
-    return return_message(true,Restaurant.where(:admin_user_id => user))
+    return return_message(true,Restaurant.where(:admin_user_id => user).serializable_hash)
   end
 
 
