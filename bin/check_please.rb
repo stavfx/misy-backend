@@ -47,6 +47,10 @@ put '/api/restaurants' do
   RestaurantMng.update(@request_params).to_json
 end
 
+post '/api/cities' do
+  RestaurantMng.create_city(@request_params["city"])
+end
+
 post '/api/services' do
   ServiceMng.create(@request_params['service']).to_json
 end

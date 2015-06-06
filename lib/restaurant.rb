@@ -36,16 +36,17 @@ class RestaurantMng
   def self.create(params)
     res = Restaurant.create({"admin_user_id" => params["admin_user_id"]})
     res.save
-    return res._id
   end
 
+  def self.create_city(city)
+    return_message(true,City.create({:_id => city}).serializable_hash)
+  end
 
   def self.update(params)
     res = Restaurant.find(params["id"])
     if res.nil?
       return_message(false,{},"No restaurant was found with id #{params["id"]}")
     else
-      data = {}
       menu_items = []
       if !params["menu_items"].nil?
         params["menu_items"].each do |item|
@@ -68,7 +69,7 @@ class RestaurantMng
                               :menu_items    => menu_items
                           )
       res.save
-      data["restaurant_id"] = res._id
+      data = res.serializable_hash
       return_message(true,data)
     end
 

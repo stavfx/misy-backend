@@ -44,7 +44,7 @@ class UserMng
       # If this is a Restaurant admin than create a restaurant
       if user.type == 2
         admin_user = user._id
-        data["restaurant_id"] = RestaurantMng.create({"admin_user_id" => user._id})
+        RestaurantMng.create({"admin_user_id" => user._id})
       end
 
       data.merge!(get_opening_data(admin_user))
