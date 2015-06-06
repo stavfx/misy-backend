@@ -27,7 +27,7 @@ end
 
 def get_user_from_session(cookies)
   return nil if (cookies.nil? || cookies["session"].nil?)
-  ::Base64.decode64(cookies["session"])
+  ::Base64.decode64(cookies["session"]).chomp!('salt')
 end
 
 
