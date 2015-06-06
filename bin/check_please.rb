@@ -79,11 +79,18 @@ post '/api/orders/dishes' do
   order(@request_params,cookies).to_json
 end
 
-get '/api/orders/services' do
+get '/api/orders' do
   user = get_user_from_session(cookies)
-  res_id = RestaurantMng.get_restaurant_by_user(user)[:data]._id.to_s
-  OrderMng.get_services_orders(res_id).to_json
+  msg = RestaurantMng.get_restaurant_by_user(user)
+  if msg[:success]
+    res_id = msg[:data]._id.to_s
+    OrderMng.get_orders(res_id).to_json
+  else
+    return_message(false,{},'Not an admin user!').to_json
+  end
+
 end
+
 get '/api/orders/dishes' do
   OrderMng.get_dish_orders().to_json
 end

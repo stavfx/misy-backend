@@ -82,9 +82,9 @@ class RestaurantMng
   end
 
   def self.get_restaurant_by_user(user)
-    puts "get_restaurant_by_user: user => #{user}"
-    puts "#{Restaurant.where(:admin_user_id => user)[:_id]}"
-    return return_message(true,Restaurant.where(:admin_user_id => user).first)
+    res = Restaurant.where(:admin_user_id => user).first
+    return return_message(true,res) unless res.nil?
+    return_message(false,{},"User #{user} is not an admin user on any restaurant")
   end
 
 

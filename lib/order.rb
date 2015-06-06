@@ -41,10 +41,10 @@ class OrderMng
     return_message(true,data)
   end
 
-  def self.get_services_orders(res_id)
-    puts "get_services_orders: res_id => #{res_id}"
-    p res_id
-    return_message(true,Order.where(:restaurant_id => res_id, :service => { :$exists => true}))
+  def self.get_orders(res_id)
+    services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}})
+    dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}})
+    return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
   # return all menu items ids of users who ordered in restaurant "restid"
