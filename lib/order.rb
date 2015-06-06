@@ -44,7 +44,7 @@ class OrderMng
   def self.get_services_orders(res_id)
     puts "get_services_orders: res_id => #{res_id}"
     p res_id
-    Service.all({:_id => res_id, :service => { $exists => true}})
+    Order.all(:restaurant_id => res_id)#, :service => { $exists => true}})
   end
 
   # return all menu items ids of users who ordered in restaurant "restid"
