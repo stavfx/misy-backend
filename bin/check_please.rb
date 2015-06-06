@@ -5,7 +5,7 @@ require "sinatra/cookies"
 require 'mongo'
 require 'mongo_mapper'
 require 'json'
-require 'bcrypt'
+require 'base64'
 
 enable :sessions
 set :bind, '0.0.0.0'
@@ -50,10 +50,16 @@ get '/api/services' do
   ServiceMng.get_all.to_json
 end
 
+post '/api/order' do
+  @request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
+  msg = OrderMng.create(@request_params)
+  cookies["dining_session"] = msg["dining_session"] if cookies["dining_session"].nil?
+end
+
 post '/api/register' do
   msg = UserMng.register(@request_params)
   if msg[:success]
-    cookies["session"] = BCrypt::Engine.hash_secret(@request_params["id"])
+    cookies["session"] = ::Base64.encode64(@request_params["id"]+'salt')
   end
   msg.to_json
 end
@@ -62,7 +68,7 @@ end
 post '/api/login' do
   msg = UserMng.login(@request_params["id"],@request_params["password"])
   if msg[:success]
-    cookies["session"] = BCrypt::Engine.hash_secret(@request_params["id"])
+    cookies["session"] = ::Base64.encode64(@request_params["id"]+'salt')
   else
     cookies.delete("session")
   end

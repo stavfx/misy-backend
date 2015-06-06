@@ -1,4 +1,6 @@
 require 'mongo_mapper'
+require 'bcrypt'
+require 'date'
 require File.join(File.dirname(__FILE__), './utils')
 
 class Order
@@ -12,6 +14,10 @@ class Order
   key :active,          Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
 
+  def serializable_hash(options = {})
+    super({:except => :dining_session}.merge(options))
+  end
+
 end
 
 # get\post_dish
@@ -22,9 +28,9 @@ class OrderMng
 
   def self.create(params)
     data = {}
-    # if params["dining_session"].nil?
-    #   params["dining_session"] =
-    # end
+    if params["dining_session"].nil?
+      params["dining_session"] = BCrypt::Engine.hash_secret(params.to_s+DateTime.now)
+    end
     order = Order.create({
                      :restaurant_id   => params["restaurant_id"],
                      :user_id         => params["user_id"],
@@ -35,8 +41,8 @@ class OrderMng
                      :dining_session  => params["dining_session"]
                  })
     order.save
-    data["order_id"] = order._id
-
+    data = order.serializable_hash
+    return_message(true,data)
   end
 
   # return all menu items ids of users who ordered in restaurant "restid"
