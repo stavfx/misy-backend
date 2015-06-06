@@ -55,7 +55,7 @@ class UserMng
   def self.login(username, password)
     if user = User.find(username)
       if user["password_hash"] == BCrypt::Engine.hash_secret(password, user["salt"])
-        data = {"user_id" => username}
+        data = {"user" => user}
         data.merge!(get_opening_data)
         return_message(true, data)
       else

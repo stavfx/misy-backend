@@ -8,9 +8,9 @@ class Order
   key :user_id,         String
   key :table_num,       Integer
   key :menu_items,      Array
-  key :services,        Array # Services / MenuItems
-  key :active,          Boolean
-  key :dining_session,  Integer
+  key :services,        Array
+  key :active,          Integer # 0 - active, 1 - not active, 2 - archived
+  key :dining_session,  String
 
 end
 
@@ -22,7 +22,9 @@ class OrderMng
 
   def self.create(params)
     data = {}
-
+    # if params["dining_session"].nil?
+    #   params["dining_session"] =
+    # end
     order = Order.create({
                      :restaurant_id   => params["restaurant_id"],
                      :user_id         => params["user_id"],

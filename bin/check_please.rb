@@ -51,8 +51,7 @@ end
 
 post '/api/register' do
   msg = UserMng.register(@request_params)
-  if msg["success"]
-    puts "Success #{@request_params["id"]}"
+  if msg[:success]
     cookies["username"] = @request_params["id"]
   end
   msg.to_json
@@ -61,8 +60,7 @@ end
 
 post '/api/login' do
   msg = UserMng.login(@request_params["id"],@request_params["password"])
-  if msg["success"]
-    puts "Success #{@request_params["id"]}"
+  if msg[:success]
     cookies["username"] = @request_params["id"]
   else
     cookies.delete("username")
