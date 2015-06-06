@@ -13,6 +13,5 @@ def get_opening_data
   data = {}
   data["restaurants"] = (RestaurantMng.get_all)[:data]
   data["cities"] = (RestaurantMng.get_all_cities)[:data]
-  data["services"] = (ServiceMng.get_all)[:data]
   return data
 end
