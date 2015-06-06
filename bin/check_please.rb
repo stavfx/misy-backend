@@ -81,7 +81,7 @@ end
 
 get '/api/orders/services' do
   user = get_user_from_session(cookies)
-  res_id = RestaurantMng.get_restaurant_by_user(user)[:data][:id]
+  res_id = RestaurantMng.get_restaurant_by_user(user)[:data]["id"]
   OrderMng.get_services_orders(res_id).to_json
 end
 get '/api/orders/dishes' do
