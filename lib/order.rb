@@ -42,7 +42,7 @@ class OrderMng
   end
 
   def self.get_services_orders(res_id)
-    p res_id
+    puts "get_services_orders: res_id => #{res_id}"
     Service.all({:_id => res_id, :service => { $exists => true}})
   end
 
