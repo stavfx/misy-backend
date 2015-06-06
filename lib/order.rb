@@ -46,7 +46,7 @@ class OrderMng
     if order.nil?
       return_message(false,{},"No Order was found with id #{params["id"]}")
     else
-      if (!order.service.nil?) && order.menu_items.empty? && params["state"] == 2
+      if (!order.service.nil?) && params["state"] == 2
         order.destroy
         data = {}
       else
