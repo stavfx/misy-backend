@@ -94,9 +94,7 @@ put '/api/orders' do
   OrderMng.update(@request_params).to_json
 end
 
-get '/api/orders/dishes' do
-  OrderMng.get_dish_orders().to_json
-end
+
 
 post '/api/register' do
   msg = UserMng.register(@request_params)

@@ -67,9 +67,9 @@ class OrderMng
 
   def self.get_orders(res_id)
     services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}}, :state =>
-    { :$not => 2})
+    { :$ne => 2})
     dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}, :state =>
-    { :$not => 2})
+    { :$ne => 2})
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
