@@ -51,7 +51,7 @@ class OrderMng
         data = {}
       else
         order.update_attributes(
-            :restarant_id   => params["restaurant_id"],
+            :restaurant_id   => params["restaurant_id"],
             :user_id         => params["user_id"],
             :table_num       => params["table_num"],
             :menu_items      => params["menu_items"],
