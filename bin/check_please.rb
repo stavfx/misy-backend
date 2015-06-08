@@ -94,6 +94,14 @@ put '/api/orders' do
   OrderMng.update(@request_params).to_json
 end
 
+get '/api/orders/history' do
+  #Get all archived
+  #TODO
+end
+
+#icons
+#exclude to restaurants without name
+#bulk update to orders
 
 
 post '/api/register' do
