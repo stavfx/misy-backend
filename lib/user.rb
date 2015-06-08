@@ -50,7 +50,7 @@ class UserMng
       data.merge!(get_opening_data(admin_user))
       return_message(true,data)
     else
-      return_message(false)
+      return_message(false, {}, "User already exists!")
     end
 
   end

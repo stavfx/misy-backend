@@ -120,7 +120,6 @@ get '/api/orders/archive' do
 end
 
 #TODO icons
-#bulk update to orders
 
 
 post '/api/register' do
