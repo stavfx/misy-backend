@@ -79,6 +79,7 @@ class OrderMng
 
   def self.send_not_active_to_archive(res_id)
     Order.all(:restaurant_id => res_id).each do |order|
+      next if order.state == 0
       hash_order = order.serializable_hash
       hash_order["state"] = '2'
       @response = update(hash_order)
