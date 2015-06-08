@@ -108,12 +108,10 @@ put '/api/orders' do
 end
 
 get '/api/orders/history' do
-  #Get all archived
-  #TODO
+  OrderMng.get_archived_orders().to_json
 end
 
 #icons
-#exclude to restaurants without name
 #bulk update to orders
 
 

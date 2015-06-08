@@ -64,12 +64,17 @@ class OrderMng
     end
   end
 
+  # Return all orders except archived, where dish orders and service orders are separated.
   def self.get_orders(res_id)
     services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}}, :state =>
     { :$ne => 2})
     dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}, :state =>
     { :$ne => 2})
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
+  end
+
+  def self.get_archived_orders
+    return_message(true,{"dishes_orders" => Order.all(:state => 2)})
   end
 
   # return all menu items ids of users who ordered in restaurant "restid"
