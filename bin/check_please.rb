@@ -40,7 +40,7 @@ get '/api/testCookies' do
 end
 
 get '/api/restaurants' do
-  RestaurantMng.get_all(@params["city"]).to_json
+  RestaurantMng.get_all().to_json
 end
 
 put '/api/restaurants' do

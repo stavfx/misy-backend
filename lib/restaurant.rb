@@ -76,8 +76,7 @@ class RestaurantMng
   end
 
 
-  def self.get_all(city = nil)
-    return return_message(true,Restaurant.all(:city => city)) unless city.nil?
+  def self.get_all()
     return_message(true,Restaurant.all(:name => { :$exists => true}))
   end
 
