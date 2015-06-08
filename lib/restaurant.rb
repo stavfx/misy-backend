@@ -1,5 +1,6 @@
 require 'mongo_mapper'
 require File.join(File.dirname(__FILE__), './utils')
+require File.join(File.dirname(__FILE__), './menuItems')
 
 class Restaurant
   include MongoMapper::Document
@@ -11,16 +12,6 @@ class Restaurant
   key :p_number,      String
   key :desc,          String
   many :menu_items
-end
-
-
-class MenuItem
-  include MongoMapper::EmbeddedDocument
-
-  key :name,        String
-  key :description, String
-  key :price ,      Integer
-  key :recommended, String
 end
 
 
@@ -38,10 +29,6 @@ class RestaurantMng
     res.save
   end
 
-  def self.create_city(city)
-    return_message(true,City.create({:_id => city}).serializable_hash)
-  end
-
   def self.update(params)
     res = Restaurant.find(params["id"])
     if res.nil?
@@ -49,15 +36,7 @@ class RestaurantMng
     else
       menu_items = []
       if !params["menu_items"].nil?
-        params["menu_items"].each do |item|
-          menu_items << MenuItem.new(
-              :name => item["name"],
-              :description => item["description"],
-              :price => item["price"],
-              :recommended => item["recommended"]
-          )
-
-        end
+        params["menu_items"].each { |item| menu_items << MenuItemMng.create(item) }
       end
 
       res.update_attributes(
@@ -76,8 +55,22 @@ class RestaurantMng
   end
 
 
+  # First adds a menu param to restaurant hash
+  # Menu has all menu categories and each category holds its relevant menu_items
   def self.get_all()
-    return_message(true,Restaurant.all(:name => { :$exists => true}))
+    menu_categories = MenuItemMng.get_all_menu_categories[:data]
+    restaurants_arr = []
+    Restaurant.all(:name => { :$exists => true}).each do |res|
+      menu = {}
+      menu_categories.each { |category| menu[category] = []}
+      res.menu_items.each do |menu_item|
+        menu[menu_item.menu_category] << menu_item
+      end
+      res[:menu] = menu
+      res.menu_items = []
+      restaurants_arr << res
+    end
+    return_message(true,restaurants_arr)
   end
 
   def self.get_restaurant_by_user(user)
@@ -86,6 +79,9 @@ class RestaurantMng
     return_message(false,{},"User #{user} is not an admin user on any restaurant")
   end
 
+  def self.create_city(city)
+    return_message(true,City.create({:_id => city}).serializable_hash)
+  end
 
   def self.get_all_cities
     city_arr = []
@@ -93,7 +89,7 @@ class RestaurantMng
     return_message(true,city_arr)
   end
 
-
+  #TODO change
   # return field "recommend" for menu item "id"
   def self.getRecommendMenuItem(id)
     menuItems=MenuItem.where(:_id => id.to_s).fields(:recommend).collect(&:recommend)

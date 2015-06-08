@@ -51,6 +51,10 @@ post '/api/cities' do
   RestaurantMng.create_city(@request_params["city"]).to_json
 end
 
+get '/api/cities' do
+  RestaurantMng.get_all_cities().to_json
+end
+
 post '/api/services' do
   ServiceMng.create(@request_params['service']).to_json
 end
@@ -58,6 +62,15 @@ end
 get '/api/services' do
   ServiceMng.get_all.to_json
 end
+
+get '/api/menuCategories' do
+  MenuItemMng.get_all_menu_categories().to_json
+end
+
+post '/api/menuCategories' do
+  MenuItemMng.create_menu_category(@request_params["menu_category"]).to_json
+end
+
 
 def order(request_params,cookies)
   username = get_user_from_session(cookies)
