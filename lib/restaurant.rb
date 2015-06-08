@@ -62,9 +62,12 @@ class RestaurantMng
     restaurants_arr = []
     Restaurant.all(:name => { :$exists => true}).each do |res|
       menu = {}
-      menu_categories.each { |category| menu[category] = []}
       res.menu_items.each do |menu_item|
-        menu[menu_item.menu_category] << menu_item
+        if menu[menu_item.menu_category].nil?
+          menu[menu_item.menu_category] = [menu_item]
+        else
+          menu[menu_item.menu_category] << menu_item
+        end
       end
       res[:menu] = menu
       res.menu_items = []
