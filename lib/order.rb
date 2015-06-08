@@ -73,9 +73,22 @@ class OrderMng
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
-  def self.get_archived_orders
-    return_message(true,{"dishes_orders" => Order.all(:state => 2)})
+  def self.get_archived_orders(res_id)
+    return_message(true,{"dishes_orders" => (Order.all(:restaurant_id => res_id, :state => 2))})
   end
+
+  def self.send_not_active_to_archive(res_id)
+    Order.all(:restaurant_id => res_id).each do |order|
+      hash_order = order.serializable_hash
+      hash_order["state"] = '2'
+      @response = update(hash_order)
+      if !@response[:success]
+        return return_message(false, "Failed to archive orders with error: #{@response[:error_message]}")
+      end
+    end
+    @response
+  end
+
 
   # return all menu items ids of users who ordered in restaurant "restid"
   def self.getAllUsersItemsByRestID(restid=nil)

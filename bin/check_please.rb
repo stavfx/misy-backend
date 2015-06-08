@@ -94,9 +94,9 @@ end
 
 get '/api/orders' do
   user = get_user_from_session(cookies)
-  msg = RestaurantMng.get_restaurant_by_user(user)
+  msg = RestaurantMng.get_restaurant_id_by_user(user)
   if msg[:success]
-    res_id = msg[:data]._id.to_s
+    res_id = msg[:data]
     OrderMng.get_orders(res_id).to_json
   else
     return_message(false,{},'Not an admin user!').to_json
@@ -108,10 +108,18 @@ put '/api/orders' do
 end
 
 get '/api/orders/history' do
-  OrderMng.get_archived_orders().to_json
+  user = get_user_from_session(cookies)
+  res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
+  OrderMng.get_archived_orders(res).to_json
 end
 
-#icons
+get '/api/orders/archive' do
+  user = get_user_from_session(cookies)
+  res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
+  OrderMng.send_not_active_to_archive(res).to_json
+end
+
+#TODO icons
 #bulk update to orders
 
 
