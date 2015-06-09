@@ -47,6 +47,7 @@ class MenuItemMng
   end
 
   def self.getRecommendMenuItem(id)
+    #FIX todo
     menuCategory=MenuItem.where(:_id => id.to_s).fields(:menu_category).collect(&:menu_category)
     recommend = MenuCategory.where(:_id => menuCategory).fields(:recommend).collect(&:recommend)
     return recommend

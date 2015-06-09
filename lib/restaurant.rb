@@ -61,19 +61,23 @@ class RestaurantMng
     menu_categories = MenuItemMng.get_all_menu_categories[:data]
     restaurants_arr = []
     Restaurant.all(:name => { :$exists => true}).each do |res|
-      menu = {}
-      res.menu_items.each do |menu_item|
-        if menu[menu_item.menu_category].nil?
-          menu[menu_item.menu_category] = [menu_item]
-        else
-          menu[menu_item.menu_category] << menu_item
-        end
-      end
-      res[:menu] = menu
-      res.menu_items = []
-      restaurants_arr << res
+      restaurants_arr << build_menu(res)
     end
     return_message(true,restaurants_arr)
+  end
+
+  def self.build_menu(res)
+    menu = {}
+    res.menu_items.each do |menu_item|
+      if menu[menu_item.menu_category].nil?
+        menu[menu_item.menu_category] = [menu_item]
+      else
+        menu[menu_item.menu_category] << menu_item
+      end
+    end
+    res[:menu] = menu
+    res.menu_items = []
+    return res
   end
 
   def self.get_restaurant_id_by_user(user)
@@ -84,7 +88,7 @@ class RestaurantMng
 
   def self.get_restaurant_by_user(user)
     res = Restaurant.where(:admin_user_id => user).first
-    return return_message(true,res) unless res.nil?
+    return return_message(true,build_menu(res)) unless res.nil?
     return_message(false,{},"User #{user} is not an admin user of any restaurant")
   end
 
