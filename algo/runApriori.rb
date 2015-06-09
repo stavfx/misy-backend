@@ -18,7 +18,8 @@ def getCSV(restid)
     tmp=Array.new
     for item in userItem
       # get recommend field/flag for menu item
-      x=RestaurantMng.getRecommendMenuItem(item)
+      # x=RestaurantMng.getRecommendMenuItem(item)
+      x=MenuItemMng.getRecommendMenuItem(item)
       # if recommend flag is true - add item to tmp array
       if x[0]
         item=item.to_s
@@ -70,8 +71,8 @@ def runApriori(restid)
 
 end
 
-MongoMapper.connection = Mongo::Connection.new('localhost')
-MongoMapper.database = 'misy'
+# MongoMapper.connection = Mongo::Connection.new('localhost')
+# MongoMapper.database = 'misy'
 
 
 runApriori("1")

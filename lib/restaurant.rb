@@ -98,12 +98,11 @@ class RestaurantMng
     return_message(true,city_arr)
   end
 
-  #TODO change
-  # return field "recommend" for menu item "id"
-  def self.getRecommendMenuItem(id)
-    menuItems=MenuItem.where(:_id => id.to_s).fields(:recommend).collect(&:recommend)
-    return menuItems
-  end
+  # # return field "recommend" for menu item "id"
+  # def self.getRecommendMenuItem(id)
+  #   menuItems=MenuItem.where(:_id => id.to_s).fields(:recommend).collect(&:recommend)
+  #   return menuItems
+  # end
 
 
 
