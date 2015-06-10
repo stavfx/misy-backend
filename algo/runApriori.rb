@@ -67,7 +67,7 @@ def runApriori(restid)
   puts(i)
   puts("i")
   puts (result.frequent_item_sets[2][max].item_set)
-
+  puts (result.association_rules)
 end
 
 MongoMapper.connection = Mongo::Connection.new('localhost')
