@@ -48,7 +48,7 @@ class RestaurantMng
                               :menu_items    => menu_items
                           )
       res.save
-      data = res.serializable_hash
+      data = build_menu(res)
       return_message(true,data)
     end
 
