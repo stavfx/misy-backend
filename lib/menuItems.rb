@@ -15,7 +15,8 @@ end
 class MenuCategory
   include MongoMapper::Document
 
-  key :_id,    String
+  key :_id,         String
+  key :recommend,   Boolean
 end
 
 
@@ -37,9 +38,19 @@ class MenuItemMng
     return_message(true,menu_categories_arr)
   end
 
-  def self.create_menu_category(category)
-    return_message(true,MenuCategory.create({:_id => category}).serializable_hash)
+  def self.create_menu_category(params)
+    menu_category = MenuCategory.create({
+                                            :_id => params["menu_category"],
+                                            :recommend => params["recommend"]
+                                        })
+    return_message(true,menu_category.serializable_hash)
   end
 
+  def self.getRecommendMenuItem(id)
+    #FIX todo
+    menuCategory=MenuItem.where(:_id => id.to_s).fields(:menu_category).collect(&:menu_category)
+    recommend = MenuCategory.where(:_id => menuCategory).fields(:recommend).collect(&:recommend)
+    return recommend
+  end
 
 end
