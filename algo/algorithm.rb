@@ -3,6 +3,9 @@ require 'apriori/association_rule'
 require 'apriori/frequent_item_set'
 require 'set'
 
+
+
+
 #
 # Apriori Algorithm(http://en.wikipedia.org/wiki/Apriori_algorithm) implementation in Ruby.
 # which is based on https://github.com/asaini/Apriori/blob/master/apriori.py.
