@@ -103,14 +103,19 @@ class OrderMng
       orders=Order.where(:user_id => id)
 
       menuItems=[]
-      for o in order
+      for o in orders
         for item in o.menu_items
           menuItems.push(item)
         end
       end
       menuItems=menuItems.delete_if { |elem| elem.flatten.empty? }
+      itemIds=[]
       for item in menuItems
-        itemIds.push(item['id'])
+        category=item['menu_category']
+        recommend=MenuCategory.where(:_id => category).fields(:recommend).collect(&:recommend)
+        if recommend[0]
+          itemIds.push(item['id'])
+        end
       end
 
       # remove duplicate items and add to user items

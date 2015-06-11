@@ -46,11 +46,4 @@ class MenuItemMng
     return_message(true,menu_category.serializable_hash)
   end
 
-  def self.getRecommendMenuItem(id)
-    #FIX todo
-    menuCategory=MenuItem.where(:_id => id.to_s).fields(:menu_category).collect(&:menu_category)
-    recommend = MenuCategory.where(:_id => menuCategory).fields(:recommend).collect(&:recommend)
-    return recommend
-  end
-
 end

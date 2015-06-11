@@ -12,22 +12,18 @@ require 'json'
 
 # prepare csv array for apriori
 def getCSV(restid)
-  # get all users who ordered in restaurant "restid"
+  # get all ordered items of users who ordered in restaurant "restid"
   userItems=OrderMng.getAllUsersItemsByRestID(restid)
   csv=[]
   for userItem in userItems
     tmp=Array.new
     for item in userItem
-      x=RestaurantMng.getRecommendMenuItem(item)
-      if x[0]
-        item=item.to_s
-        tmp.push(item)
-      end
+         tmp.push(item)
     end
     csv.push(tmp)
   end
-  y= RestaurantMng.get_all_menu_items("1")
-  p y
+  p userItems
+  p csv
   return csv
 end
 
@@ -35,12 +31,12 @@ end
 def runApriori(restid,userOrders)
 
   # transactions = getCSV(restid)
-  transactions = []
-  File.open("/root/misy-backend/algo/dataset.csv") do |file|
-    file.each_line do |line|
-      transactions << CSV.parse(line)[0]
-    end
-  end
+  transactions = getCSV(restid)
+  #File.open("/root/misy-backend/algo/dataset.csv") do |file|
+  #  file.each_line do |line|
+   #   transactions << CSV.parse(line)[0]
+   # end
+  #end
   p transactions
   algorithm = Apriori::Algorithm.new(0.15, 0.8)
   result = algorithm.analyze(transactions)
@@ -63,7 +59,17 @@ def runApriori(restid,userOrders)
     i=i+1
   end
   output.uniq!.compact!
+  puts "output:"
   p output
+
+  restItems=RestaurantMng.get_all_menu_items(restid)
+  puts "ids from rest"
+  p restItems
+
+  x=output&restItems
+  p x
+  return x
+
 
 
 end
@@ -71,6 +77,6 @@ end
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
 
-
-runApriori("5575f0f7e1382313d7000003",["1","2","3"])
+#getCSV("5575f0f7e1382313d7000003")
+runApriori("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
 
