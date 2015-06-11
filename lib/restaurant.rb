@@ -108,6 +108,10 @@ class RestaurantMng
   #   return menuItems
   # end
 
+  def self.get_all_menu_items(restid)
+    menuItems=Restaurant.where(:_id => restid).fields(:menu_items).collect(&:menu_items)
+    return menuItems
+  end
 
 
 end

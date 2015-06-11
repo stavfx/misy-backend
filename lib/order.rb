@@ -92,21 +92,30 @@ class OrderMng
 
 
   # return all menu items ids of users who ordered in restaurant "restid"
-  def self.getAllUsersItemsByRestID(restid=nil)
+  def self.getAllUsersItemsByRestID(restid)
     # get ids of all users who ordered in restaurant "restid"
     userIds=Order.where(:restaurant_id => restid).fields(:user_id).collect(&:user_id).uniq
     userItems=Array.new
 
     for id in userIds
       # get all orders of usersIds
-      order=Order.where(:user_id => id).fields(:menu_items).collect(&:menu_items)
-      items=[]
-      order.each do |arr|
-        items=items+arr
+      #order=Order.where(:user_id => id).fields(:menu_items).collect(&:menu_items)
+      orders=Order.where(:user_id => id)
+
+      menuItems=[]
+      for o in order
+        for item in o.menu_items
+          menuItems.push(item)
+        end
       end
+      menuItems=menuItems.delete_if { |elem| elem.flatten.empty? }
+      for item in menuItems
+        itemIds.push(item['id'])
+      end
+
       # remove duplicate items and add to user items
-      items.uniq!
-      userItems.push(items)
+      itemIds.uniq!
+      userItems.push(itemIds)
     end
     return userItems
   end
