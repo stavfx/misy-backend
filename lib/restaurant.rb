@@ -55,8 +55,7 @@ class RestaurantMng
   end
 
 
-  # First adds a menu param to restaurant hash
-  # Menu has all menu categories and each category holds its relevant menu_items
+
   def self.get_all()
     menu_categories = MenuItemMng.get_all_menu_categories[:data]
     restaurants_arr = []
@@ -66,6 +65,8 @@ class RestaurantMng
     return_message(true,restaurants_arr)
   end
 
+  # First adds a menu param to restaurant hash
+  # Menu has all menu categories and each category holds its relevant menu_items
   def self.build_menu(res)
     menu = {}
     res.menu_items.each do |menu_item|

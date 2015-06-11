@@ -13,12 +13,11 @@ class Order
   key :service,         String
   key :state,           Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
+  key :comment,         String
 
 
 end
 
-# get\post_dish
-# get\post_service
 
 
 class OrderMng
@@ -34,7 +33,8 @@ class OrderMng
                      :menu_items      => params["menu_items"],
                      :service         => params["service"],
                      :state           => params["state"],
-                     :dining_session  => params["dining_session"]
+                     :dining_session  => params["dining_session"],
+                     :comment         => params["comment"]
                  })
     order.save
     data = order.serializable_hash
@@ -56,6 +56,7 @@ class OrderMng
             :table_num       => params["table_num"],
             :menu_items      => params["menu_items"],
             :service         => params["service"],
+            :comment         => params["comment"],
             :state           => params["state"]
         )
         order.save
@@ -66,8 +67,7 @@ class OrderMng
 
   # Return all orders except archived, where dish orders and service orders are separated.
   def self.get_orders(res_id)
-    services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :service => {:$not => {:$size => 0}}, :state =>
-    { :$ne => 2})
+    services_orders = Order.where(:restaurant_id => res_id, :service => { :$exists => true}, :state => { :$ne => 2})
     dishes_orders = Order.where(:restaurant_id => res_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}, :state =>
     { :$ne => 2})
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})

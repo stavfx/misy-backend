@@ -52,7 +52,18 @@ class UserMng
     else
       return_message(false, {}, "User already exists!")
     end
+  end
 
+
+  def self.update(params)
+    user = User.find(params["id"])
+    return return_message(false,{},"Can't find user #{params["id"]}") if user.nil?
+    user.update_attributes(
+        :first_name => params["first_name"],
+        :last_name => params["last_name"]
+    )
+    user.save
+    return_message(true,user.serializable_hash)
   end
 
 
