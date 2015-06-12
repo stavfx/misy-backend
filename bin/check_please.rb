@@ -37,16 +37,16 @@ def set_dining_session_in_cookies(response, dining_session)
 end
 
 def delete_user_from_cookies(response)
-  response.delete_cookie("session")
+  response.set_cookie("session", :value => nil, :path => '/')
 end
 
 def delete_dining_session_from_cookies(response)
-  response.delete_cookie("dining_session")
+  response.set_cookie("dining_session", :value => nil, :path => '/')
 end
 
 
 get '/' do
-  "Hi #{@user}, Welcome to Misy! :)"
+  "Hi #{@user}, Welcome to Misy! :) #{@dining_session}"
 end
 
 get '/api/testCookies' do
