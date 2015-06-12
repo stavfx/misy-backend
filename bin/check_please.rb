@@ -32,7 +32,7 @@ end
 
 
 get '/' do
-  "Hi #{cookies["username"]}, Welcome to Misy! :)"
+  "Hi #{get_user_from_session(cookies)}, Welcome to Misy! :)"
 end
 
 get '/api/testCookies' do
