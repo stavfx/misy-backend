@@ -175,7 +175,7 @@ post '/api/login' do
   if msg[:success]
     set_user_in_cookies(response,@request_params["id"])
   else
-    response.delete_cookie("session")
+    delete_user_from_cookies(response)
   end
   msg.to_json
 end
@@ -184,7 +184,7 @@ end
 
 
 post '/api/logout' do
-  response.delete_cookie("session")
+  delete_user_from_cookies(response)
   return_message(true).to_json
 end
 
