@@ -97,7 +97,7 @@ end
 
 post '/api/orders/service' do
   msg = order(@request_params)
-  delete_dining_session_from_cookies(response) if (!@request_params["service"].nil?) && @request_params["services"].eql?("check")
+  delete_dining_session_from_cookies(response) if (!@request_params["service"].nil?) && @request_params["service"].eql?("check")
   msg.to_json
 end
 
