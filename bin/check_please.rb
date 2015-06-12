@@ -156,6 +156,8 @@ post '/api/login' do
 end
 
 
+
+
 post '/api/logout' do
   response.delete_cookie("session")
   return_message(true).to_json
