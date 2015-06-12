@@ -132,11 +132,8 @@ get '/api/orders/restaurant/history' do
 end
 
 get '/api/orders/user/history' do
-  puts "history"
   return return_message(false,{},"No user logged in") if @user.nil?
-  puts "before func"
   OrderMng.get_orders_history_by_user(@user).to_json
-  puts "after func"
 end
 
 get '/api/orders/archive' do
