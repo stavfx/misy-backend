@@ -14,7 +14,6 @@ class Order
   key :service,         String
   key :state,           Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
-  key :comment,         String
   key :date,            Integer
 
 
@@ -36,7 +35,6 @@ class OrderMng
                              :service         => params["service"],
                              :state           => params["state"],
                              :dining_session  => params["dining_session"],
-                             :comment         => params["comment"],
                              :date            => Time.now.to_i
                          })
     order.save
@@ -59,7 +57,6 @@ class OrderMng
             :table_num       => params["table_num"],
             :menu_items      => params["menu_items"],
             :service         => params["service"],
-            :comment         => params["comment"],
             :state           => params["state"]
         )
         order.save

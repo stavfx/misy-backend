@@ -9,6 +9,7 @@ class MenuItem
   key :description,      String
   key :price ,           Integer
   key :menu_category,    String
+  key :comment,          String
 end
 
 
@@ -27,7 +28,8 @@ class MenuItemMng
         :name => params["name"],
         :description => params["description"],
         :price => params["price"],
-        :menu_category => params["menu_category"]
+        :menu_category => params["menu_category"],
+        :comment => params["comment"]
     )
   end
 
