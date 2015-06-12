@@ -1,5 +1,5 @@
 require 'mongo_mapper'
-Dir['/root/maayan/lib/*.rb'].each do |file|
+Dir['../lib/*.rb'].each do |file|
   puts file
   require file
 end
