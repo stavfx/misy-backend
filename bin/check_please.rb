@@ -7,7 +7,7 @@ require 'mongo_mapper'
 require 'json'
 require 'base64'
 
-enable :sessions
+#enable :sessions
 set :bind, '0.0.0.0'
 set :port, 80
 
@@ -135,6 +135,10 @@ get '/api/getRecommended/:res_id' do
 end
 #TODO icons
 
+
+put '/api/user' do
+  UserMng.update(@request_params).to_json
+end
 
 post '/api/register' do
   msg = UserMng.register(@request_params)
