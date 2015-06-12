@@ -25,14 +25,18 @@ before do
   @request_params = JSON.parse json_params unless (json_params.nil? || json_params.empty?)
 end
 
-def get_user_from_session(cookies)
-  return nil if (cookies.nil? || cookies["session"].nil?)
-  ::Base64.decode64(cookies["session"]).chomp!('salt')
+def get_user_from_cookies(request)
+  return nil if (request.cookies.nil? || request.cookies["session"].nil?)
+  ::Base64.decode64(request.cookies["session"]).chomp!('salt')
+end
+
+def set_user_in_cookies(response, user)
+  response.set_cookie("session", :value => ::Base64.encode64(user+'salt'), :path => '/')
 end
 
 
 get '/' do
-  "Hi #{get_user_from_session(cookies)}, Welcome to Misy! :)"
+  "Hi #{get_user_from_cookies(request)}, Welcome to Misy! :)"
 end
 
 get '/api/testCookies' do
@@ -73,7 +77,7 @@ end
 
 
 def order(request_params,cookies)
-  username = get_user_from_session(cookies)
+  username = get_user_from_cookies(request)
   return return_message(false,{},'Session not found') if username.nil?
   request_params["user_id"] = username
   request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
@@ -93,7 +97,7 @@ post '/api/orders/dishes' do
 end
 
 get '/api/orders' do
-  user = get_user_from_session(cookies)
+  user = get_user_from_cookies(request)
   msg = RestaurantMng.get_restaurant_id_by_user(user)
   if msg[:success]
     res_id = msg[:data]
@@ -108,25 +112,25 @@ put '/api/orders' do
 end
 
 get '/api/orders/restaurant/history' do
-  user = get_user_from_session(cookies)
+  user = get_user_from_cookies(request)
   res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
   OrderMng.get_orders_history_by_res(res).to_json
 end
 
 get '/api/orders/user/history' do
-  user = get_user_from_session(cookies)
+  user = get_user_from_cookies(request)
   OrderMng.get_orders_history_by_user(user).to_json
 end
 
 get '/api/orders/archive' do
-  user = get_user_from_session(cookies)
+  user = get_user_from_cookies(request)
   res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
   OrderMng.send_not_active_to_archive(res).to_json
 end
 
 
 get '/api/getRecommended/:res_id' do
-  user_id = get_user_from_session(cookies)
+  user_id = get_user_from_cookies(request)
   res_id = params[:res_id]
 end
 #TODO icons
@@ -135,7 +139,7 @@ end
 post '/api/register' do
   msg = UserMng.register(@request_params)
   if msg[:success]
-    cookies["session"] = ::Base64.encode64(@request_params["id"]+'salt')
+    set_user_in_cookies(response,@request_params["id"])
   end
   msg.to_json
 end
@@ -144,16 +148,16 @@ end
 post '/api/login' do
   msg = UserMng.login(@request_params["id"],@request_params["password"])
   if msg[:success]
-    cookies["session"] = ::Base64.encode64(@request_params["id"]+'salt')
+    set_user_in_cookies(response,@request_params["id"])
   else
-    cookies.delete("session")
+    response.delete_cookie("session")
   end
   msg.to_json
 end
 
 
 post '/api/logout' do
-  cookies.delete("session")
+  response.delete_cookie("session")
   return_message(true).to_json
 end
 
