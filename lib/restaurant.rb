@@ -57,7 +57,6 @@ class RestaurantMng
 
 
   def self.get_all()
-    menu_categories = MenuItemMng.get_all_menu_categories[:data]
     restaurants_arr = []
     Restaurant.all(:name => { :$exists => true}).each do |res|
       restaurants_arr << build_menu(res)

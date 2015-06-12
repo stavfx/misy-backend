@@ -107,10 +107,15 @@ put '/api/orders' do
   OrderMng.update(@request_params).to_json
 end
 
-get '/api/orders/history' do
+get '/api/orders/restaurant/history' do
   user = get_user_from_session(cookies)
   res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
-  OrderMng.get_archived_orders(res).to_json
+  OrderMng.get_archived_orders_by_res(res).to_json
+end
+
+get '/api/orders/user/history' do
+  user = get_user_from_session(cookies)
+  OrderMng.get_archived_orders_by_user(user).to_json
 end
 
 get '/api/orders/archive' do
@@ -119,6 +124,11 @@ get '/api/orders/archive' do
   OrderMng.send_not_active_to_archive(res).to_json
 end
 
+
+get '/api/getRecommended' do
+#user_id, res_id
+
+end
 #TODO icons
 
 
