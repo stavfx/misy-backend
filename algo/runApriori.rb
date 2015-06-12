@@ -1,5 +1,5 @@
 require 'mongo_mapper'
-Dir['/root/maayan/lib/*.rb'].each do |file|
+Dir['../lib/*.rb'].each do |file|
   puts file
   require file
 end
@@ -28,41 +28,39 @@ def getCSV(restid)
   return userItems
 end
 
+# prepare hash for apriori
 def getHash(restid)
+  # get all ordered items of users who ordered in restaurant "restid"
   userItems=OrderMng.getAllUsersItemsByRestID(restid)
   userItems=Hash[userItems.map.with_index { |value, index| [index, value] }]
-  p userItems
   return userItems
 end
 
-
-def run(restid,userOrders)
+# run Apriori algorithm
+def runApriori(restid,userOrders)
   outputArray = []
-  test_data = getHash(restid)
-  item_set = Apriori::ItemSet.new(test_data)
-  outA = item_set.mine(60, 60)
-  p outA
+  orderedItems = getHash(restid)
+  orderedItems = Apriori::ItemSet.new(orderedItems)
+  outA = orderedItems.mine(60, 60)
+  # get all menu items of specific restaurant
   restItems=RestaurantMng.get_all_menu_items(restid)
 
-  puts "__________________________________"
-  #outA.each {|key, value| outputArray.push(key.to_s.split("=>").drop(1).join("").split(",").flatten(2)); p "ia"}
-  puts "*****************"
-  restItems.push("5575f87ce138231659000003");
-  p restItems
-  puts "*****************"
+  # add to outputArray only recommended items from current restaurant
   outA.each {
-      |key, value|tmp = key.to_s.split("=>");
+    |key, value|tmp = key.to_s.split("=>");
     tmp[tmp.length-1] = tmp.last.split(",").join("");
     tmp[0] = tmp[0].split(",");
     tmp = tmp.flatten(2);
     outputArray.push(tmp) if restItems.include?(tmp.last);
   }
-  p outputArray
-  recommendedItem=[]
-  recommendedItem.push(maxIntersection(userOrders,outputArray))
 
-  puts "__________________________________"
-  return recommendedItem
+  # get 3 most accurate recommendations by checking which recommendation most similar to current user prev orders
+  recommendedItem=[]
+  recommended=maxIntersection(userOrders,outputArray)
+  recommendedItem.push(recommended)
+
+  return recommended
+  #return recommendedItem
 end
 
 def maxIntersection(userOrders, recommendationArr)
@@ -86,10 +84,10 @@ def maxIntersection(userOrders, recommendationArr)
   return recommendation
 
 end
-MongoMapper.connection = Mongo::Connection.new('localhost')
-MongoMapper.database = 'misy'
+#MongoMapper.connection = Mongo::Connection.new('localhost')
+#MongoMapper.database = 'misy'
 
 #getCSV("5575f0f7e1382313d7000003")
 #runApriori("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
-run("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
+#run("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
 #getHash("5575f0f7e1382313d7000003")

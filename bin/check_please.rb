@@ -1,4 +1,5 @@
 Dir['../lib/*.rb'].each { |file| require file }
+#Dir['../algo/*.rb'].each { |file| require file }
 require 'rubygems'
 require 'sinatra'
 require "sinatra/cookies"
@@ -132,8 +133,11 @@ get '/api/orders/restaurant/history' do
 end
 
 get '/api/orders/user/history' do
+  puts "history"
   return return_message(false,{},"No user logged in") if @user.nil?
+  puts "before func"
   OrderMng.get_orders_history_by_user(@user).to_json
+  puts "after func"
 end
 
 get '/api/orders/archive' do
@@ -148,7 +152,11 @@ end
 get '/api/getRecommended/:res_id' do
   return return_message(false,{},"No user logged in") if @user.nil?
   res_id = params[:res_id]
+  userOrders= OrderMng.get_orders_by_userID(@user)
+
+  #runApriori(res_id,userOrders)
 end
+
 #TODO icons
 
 
