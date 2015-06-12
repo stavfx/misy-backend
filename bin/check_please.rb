@@ -119,12 +119,16 @@ end
 
 get '/api/orders/user/history' do
   user = get_user_from_cookies(request)
+  return return_message(false,{},"No user logged in") if user.nil?
   OrderMng.get_orders_history_by_user(user).to_json
 end
 
 get '/api/orders/archive' do
   user = get_user_from_cookies(request)
-  res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
+  return return_message(false,{},"No user logged in") if user.nil?
+  response = RestaurantMng.get_restaurant_id_by_user(user)
+  return response unless response[:success]
+  res = response[:data]
   OrderMng.send_not_active_to_archive(res).to_json
 end
 
