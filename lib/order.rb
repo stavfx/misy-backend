@@ -14,6 +14,7 @@ class Order
   key :state,           Integer # 0 - active, 1 - not active, 2 - archived
   key :dining_session,  String
   key :comment,         String
+  key :date,            Integer
 
 
 end
@@ -23,8 +24,8 @@ end
 class OrderMng
 
   def self.create(params)
-    if params["dining_session"].nil?
-      params["dining_session"] = ::Base64.encode64(params.to_s+DateTime.now.to_s)
+    if (params["dining_session"].nil? || (params["dining_session"].split('_').first != params["restaurant_id"]))
+      params["dining_session"] = params["restaurant_id"]+'_'+::Base64.encode64(params.to_s+DateTime.now.to_s)
     end
     order = Order.create({
                              :restaurant_id   => params["restaurant_id"],
@@ -34,7 +35,8 @@ class OrderMng
                              :service         => params["service"],
                              :state           => params["state"],
                              :dining_session  => params["dining_session"],
-                             :comment         => params["comment"]
+                             :comment         => params["comment"],
+                             :date            => Time.now.to_i
                          })
     order.save
     data = order.serializable_hash
@@ -73,8 +75,21 @@ class OrderMng
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
-  def self.get_archived_orders(res_id)
+  def self.get_orders_history_by_res(res_id)
     return_message(true,{"dishes_orders" => (Order.all(:restaurant_id => res_id, :state => 2))})
+  end
+
+  def self.get_orders_history_by_user(user_id)
+    puts "before"
+    orders_by_session = Hash.new {|h,k| h[k] = {"menu_items" => [],"user_id" => user_id, "date" => Time.now.to_i} }  # Hash of hashes
+    puts user_id
+    Order.where(:user_id => user_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}).each do |order|
+      puts order.dining_session
+      orders_by_session[order.dining_session]["menu_items"] += order.menu_items
+      orders_by_session[order.dining_session]["restaurant_id"] ||= order.restaurant_id
+      orders_by_session[order.dining_session]["date"] = order.date if order.date < orders_by_session[order.dining_session]["date"]
+    end
+     return return_message(true,orders_by_session.values)
   end
 
   def self.send_not_active_to_archive(res_id)

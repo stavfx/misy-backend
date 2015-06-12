@@ -7,7 +7,7 @@ require 'mongo_mapper'
 require 'json'
 require 'base64'
 
-enable :sessions
+#enable :sessions
 set :bind, '0.0.0.0'
 set :port, 80
 
@@ -23,20 +23,29 @@ before do
   json_params = request.body.read
   @request_params = {}
   @request_params = JSON.parse json_params unless (json_params.nil? || json_params.empty?)
-end
-
-def get_user_from_cookies(request)
-  return nil if (request.cookies.nil? || request.cookies["session"].nil?)
-  ::Base64.decode64(request.cookies["session"]).chomp!('salt')
+  @user = (request.cookies["session"].nil?) ? nil : ::Base64.decode64(request.cookies["session"]).chomp!('salt')
+  @dining_session = request.cookies["dining_session"]
 end
 
 def set_user_in_cookies(response, user)
   response.set_cookie("session", :value => ::Base64.encode64(user+'salt'), :path => '/')
 end
 
+def set_dining_session_in_cookies(response, dining_session)
+  response.set_cookie("dining_session", :value => dining_session, :path => '/')
+end
+
+def delete_user_from_cookies(response)
+  response.delete_cookie("session")
+end
+
+def delete_dining_session_from_cookies(response)
+  response.delete_cookie("dining_session")
+end
+
 
 get '/' do
-  "Hi #{get_user_from_cookies(request)}, Welcome to Misy! :)"
+  "Hi #{@user}, Welcome to Misy! :)"
 end
 
 get '/api/testCookies' do
@@ -76,34 +85,33 @@ post '/api/menuCategories' do
 end
 
 
-def order(request_params,cookies)
-  username = get_user_from_cookies(request)
-  return return_message(false,{},'Session not found') if username.nil?
-  request_params["user_id"] = username
-  request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
+def order(request_params)
+  return return_message(false,{},'Session not found') if @user.nil?
+  request_params["user_id"] = @user
+  request_params["dining_session"] = @dining_session
   msg = OrderMng.create(request_params)
-  cookies["dining_session"] = msg[:data]["dining_session"] if cookies["dining_session"].nil?
+  set_dining_session_in_cookies(response,msg[:data]["dining_session"])
   return msg
 end
 
 post '/api/orders/service' do
-  msg = order(@request_params,cookies)
-  cookies.delete("dining_session") if (!@request_params["service"].nil?) && @request_params["services"].eql?("check")
+  msg = order(@request_params)
+  delete_dining_session_from_cookies(response) if (!@request_params["service"].nil?) && @request_params["services"].eql?("check")
   msg.to_json
 end
 
 post '/api/orders/dishes' do
-  order(@request_params,cookies).to_json
+  order(@request_params).to_json
 end
 
 get '/api/orders' do
-  user = get_user_from_cookies(request)
-  msg = RestaurantMng.get_restaurant_id_by_user(user)
+  return return_message(false,{},"No user logged in").to_json if @user.nil?
+  msg = RestaurantMng.get_restaurant_id_by_user(@user)
   if msg[:success]
     res_id = msg[:data]
     OrderMng.get_orders(res_id).to_json
   else
-    return_message(false,{},'Not an admin user!').to_json
+    msg.to_json
   end
 end
 
@@ -112,29 +120,44 @@ put '/api/orders' do
 end
 
 get '/api/orders/restaurant/history' do
-  user = get_user_from_cookies(request)
-  res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
-  OrderMng.get_orders_history_by_res(res).to_json
+  return return_message(false,{},"No user logged in") if @user.nil?
+  msg = RestaurantMng.get_restaurant_id_by_user(@user)
+  if msg[:success]
+    res_id = msg[:data]
+    OrderMng.get_orders_history_by_res(res_id).to_json
+  else
+    msg.to_json
+  end
+
 end
 
 get '/api/orders/user/history' do
-  user = get_user_from_cookies(request)
-  OrderMng.get_orders_history_by_user(user).to_json
+  puts "history"
+  return return_message(false,{},"No user logged in") if @user.nil?
+  puts "before func"
+  OrderMng.get_orders_history_by_user(@user).to_json
+  puts "after func"
 end
 
 get '/api/orders/archive' do
-  user = get_user_from_cookies(request)
-  res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
+  return return_message(false,{},"No user logged in") if @user.nil?
+  response = RestaurantMng.get_restaurant_id_by_user(@user)
+  return response unless response[:success]
+  res = response[:data]
   OrderMng.send_not_active_to_archive(res).to_json
 end
 
 
 get '/api/getRecommended/:res_id' do
-  user_id = get_user_from_cookies(request)
+  return return_message(false,{},"No user logged in") if @user.nil?
   res_id = params[:res_id]
 end
 #TODO icons
 
+
+put '/api/user' do
+  UserMng.update(@request_params).to_json
+end
 
 post '/api/register' do
   msg = UserMng.register(@request_params)
