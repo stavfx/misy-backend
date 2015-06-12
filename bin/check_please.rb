@@ -125,9 +125,9 @@ get '/api/orders/archive' do
 end
 
 
-get '/api/getRecommended' do
-#user_id, res_id
-
+get '/api/getRecommended/:res_id' do
+  user_id = get_user_from_session(cookies)
+  res_id = params[:res_id]
 end
 #TODO icons
 
