@@ -80,9 +80,9 @@ def order(request_params,cookies)
   username = get_user_from_cookies(request)
   return return_message(false,{},'Session not found') if username.nil?
   request_params["user_id"] = username
-  request_params["dining_session"] = cookies["dining_session"] unless cookies["dining_session"].nil?
+  request_params["dining_session"] = cookies["dining_session"]
   msg = OrderMng.create(request_params)
-  cookies["dining_session"] = msg[:data]["dining_session"] if cookies["dining_session"].nil?
+  cookies["dining_session"] = msg[:data]["dining_session"]
   return msg
 end
 
