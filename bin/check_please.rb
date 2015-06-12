@@ -100,9 +100,9 @@ post '/api/orders/service' do
   puts "service: #{@request_params["service"]}"
   is_check = (!@request_params["service"].nil?) && @request_params["service"].eql?("check")
   p is_check
-  p response.cookies
+  p @dining_session
   delete_dining_session_from_cookies(response) if is_check
-  p response.cookies
+
   msg.to_json
 end
 
