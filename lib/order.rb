@@ -75,13 +75,13 @@ class OrderMng
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
-  def self.get_archived_orders_by_res(res_id)
+  def self.get_orders_history_by_res(res_id)
     return_message(true,{"dishes_orders" => (Order.all(:restaurant_id => res_id, :state => 2))})
   end
 
-  def self.get_archived_orders_by_user(user_id)
+  def self.get_orders_history_by_user(user_id)
     orders_by_session = Hash.new {|h,k| h[k] = {"menu_items" => [],"user_id" => user_id, "date" => Time.now.to_i } }  # Hash of hashes
-    Order.all(:user_id => user_id, :state => 2).each do |order|
+    Order.all(:user_id => user_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}).each do |order|
       puts order.dining_session
       orders_by_session[order.dining_session]["menu_items"] =+ order.menu_items
       orders_by_session[order.dining_session]["restaurant_id"] ||= order.restaurant_id

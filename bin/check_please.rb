@@ -110,12 +110,12 @@ end
 get '/api/orders/restaurant/history' do
   user = get_user_from_session(cookies)
   res = RestaurantMng.get_restaurant_id_by_user(user)[:data]
-  OrderMng.get_archived_orders_by_res(res).to_json
+  OrderMng.get_orders_history_by_res(res).to_json
 end
 
 get '/api/orders/user/history' do
   user = get_user_from_session(cookies)
-  OrderMng.get_archived_orders_by_user(user).to_json
+  OrderMng.get_orders_history_by_user(user).to_json
 end
 
 get '/api/orders/archive' do
