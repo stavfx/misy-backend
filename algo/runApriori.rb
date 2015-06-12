@@ -1,9 +1,9 @@
 require 'mongo_mapper'
-Dir['/root/misy-backend/lib/*.rb'].each do |file|
+Dir['/root/maayan/lib/*.rb'].each do |file|
   puts file
   require file
 end
-require 'apriori/algorithm'
+require 'apriori'
 require 'csv'
 require 'rubygems'
 require 'json'
@@ -18,65 +18,78 @@ def getCSV(restid)
   for userItem in userItems
     tmp=Array.new
     for item in userItem
-         tmp.push(item)
+      tmp.push(item)
     end
     csv.push(tmp)
   end
-  p userItems
+  puts("B4 P")
   p csv
-  return csv
+  p userItems
+  return userItems
+end
+
+def getHash(restid)
+  userItems=OrderMng.getAllUsersItemsByRestID(restid)
+  userItems=Hash[userItems.map.with_index { |value, index| [index, value] }]
+  p userItems
+  return userItems
 end
 
 
-def runApriori(restid,userOrders)
-
-  # transactions = getCSV(restid)
-  transactions = getCSV(restid)
-  #File.open("/root/misy-backend/algo/dataset.csv") do |file|
-  #  file.each_line do |line|
-   #   transactions << CSV.parse(line)[0]
-   # end
-  #end
-  p transactions
-  algorithm = Apriori::Algorithm.new(0.15, 0.8)
-  result = algorithm.analyze(transactions)
-
-  i=0
-  j=0
-
-  output=Array.new
-  while i < result.frequent_item_sets[2].length#result.association_rules.length
-    while j < result.frequent_item_sets[2][i].item_set.length
-      puts(result.frequent_item_sets[2][i].item_set[j])
-      for order in userOrders
-        if order.to_s.eql?(result.frequent_item_sets[2][i].item_set[j].to_s)
-          output.push(result.frequent_item_sets[2][i].item_set[j+1])
-        end
-      end
-      j=j+1
-    end
-    j=0
-    i=i+1
-  end
-  output.uniq!.compact!
-  puts "output:"
-  p output
-
+def run(restid,userOrders)
+  outputArray = []
+  test_data = getHash(restid)
+  item_set = Apriori::ItemSet.new(test_data)
+  outA = item_set.mine(60, 60)
+  p outA
   restItems=RestaurantMng.get_all_menu_items(restid)
-  puts "ids from rest"
+
+  puts "__________________________________"
+  #outA.each {|key, value| outputArray.push(key.to_s.split("=>").drop(1).join("").split(",").flatten(2)); p "ia"}
+  puts "*****************"
+  restItems.push("5575f87ce138231659000003");
   p restItems
+  puts "*****************"
+  outA.each {
+      |key, value|tmp = key.to_s.split("=>");
+    tmp[tmp.length-1] = tmp.last.split(",").join("");
+    tmp[0] = tmp[0].split(",");
+    tmp = tmp.flatten(2);
+    outputArray.push(tmp) if restItems.include?(tmp.last);
+  }
+  p outputArray
+  recommendedItem=[]
+  recommendedItem.push(maxIntersection(userOrders,outputArray))
 
-  x=output&restItems
-  p x
-  return x
-
-
-
+  puts "__________________________________"
+  return recommendedItem
 end
 
+def maxIntersection(userOrders, recommendationArr)
+  max=0
+  recommendation=""
+
+  for cell in recommendationArr
+    tmp=cell.clone
+    tmp.delete(tmp.last)
+    p tmp
+    p cell
+    interArr=(tmp&userOrders)
+    interSize=interArr.length
+    p interSize
+    if interSize>max
+      max=interSize
+      recommendation=cell.last
+    end
+  end
+  p recommendation
+  return recommendation
+
+end
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
 
 #getCSV("5575f0f7e1382313d7000003")
-runApriori("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
-
+#runApriori("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
+run("5575f0f7e1382313d7000003",["5575f87ce138231659000001","55783815e138231b2100000f","55783815e138231b2100000e"])
+#getHash("5575f0f7e1382313d7000003")
