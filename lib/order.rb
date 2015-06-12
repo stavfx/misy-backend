@@ -82,6 +82,7 @@ class OrderMng
   def self.get_archived_orders_by_user(user_id)
     orders_by_session = Hash.new {|h,k| h[k] = {"menu_items" => [],"user_id" => user_id, "date" => Time.now.to_i } }  # Hash of hashes
     Order.all(:user_id => user_id, :state => 2).each do |order|
+      puts order.dining_session
       orders_by_session[order.dining_session]["menu_items"] =+ order.menu_items
       orders_by_session[order.dining_session]["restaurant_id"] ||= order.restaurant_id
       orders_by_session[order.dining_session]["date"] = order.date if order.date < orders_by_session[order.dining_session]["date"]
