@@ -2,6 +2,7 @@ require 'mongo_mapper'
 require 'base64'
 require 'date'
 require File.join(File.dirname(__FILE__), './utils')
+require 'securerandom'
 
 class Order
   include MongoMapper::Document
@@ -25,7 +26,7 @@ class OrderMng
 
   def self.create(params)
     if (params["dining_session"].nil? || (params["dining_session"].split('_').first != params["restaurant_id"]))
-      params["dining_session"] = params["restaurant_id"]+'_'+::Base64.encode64(params.to_s+DateTime.now.to_s)
+      params["dining_session"] = params["restaurant_id"]+'_'+SecureRandom.uuid
     end
     order = Order.create({
                              :restaurant_id   => params["restaurant_id"],
