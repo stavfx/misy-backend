@@ -80,11 +80,8 @@ class OrderMng
   end
 
   def self.get_orders_history_by_user(user_id)
-    puts "before"
     orders_by_session = Hash.new {|h,k| h[k] = {"menu_items" => [],"user_id" => user_id, "date" => Time.now.to_i} }  # Hash of hashes
-    puts user_id
     Order.where(:user_id => user_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}).each do |order|
-      puts order.dining_session
       orders_by_session[order.dining_session]["menu_items"] += order.menu_items
       orders_by_session[order.dining_session]["restaurant_id"] ||= order.restaurant_id
       orders_by_session[order.dining_session]["date"] = order.date if order.date < orders_by_session[order.dining_session]["date"]
