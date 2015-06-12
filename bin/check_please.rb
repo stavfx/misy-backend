@@ -146,7 +146,7 @@ end
 
 
 get '/api/getRecommended/:res_id' do
-  user_id = @user
+  return return_message(false,{},"No user logged in") if @user.nil?
   res_id = params[:res_id]
 end
 #TODO icons
