@@ -151,7 +151,8 @@ get '/api/getRecommended/:res_id' do
   res_id = params[:res_id]
   userOrders= OrderMng.get_orders_by_userID(@user)
 
-  runApriori(res_id,userOrders)
+  x=runApriori(res_id,userOrders)
+  p x
 end
 
 #TODO icons
