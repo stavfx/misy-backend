@@ -181,11 +181,12 @@ post '/api/login' do
 end
 
 
-
-
 post '/api/logout' do
   delete_user_from_cookies(response)
   return_message(true).to_json
 end
 
 
+get '/api/test_image' do
+  send_file File.expand_path('file.txt', settings.public_folder)
+end
