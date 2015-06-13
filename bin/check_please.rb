@@ -1,5 +1,5 @@
 Dir['../lib/*.rb'].each { |file| require file }
-#Dir['../algo/*.rb'].each { |file| require file }
+Dir['../algo/*.rb'].each { |file| require file }
 require 'rubygems'
 require 'sinatra'
 require "sinatra/cookies"
@@ -151,7 +151,7 @@ get '/api/getRecommended/:res_id' do
   res_id = params[:res_id]
   userOrders= OrderMng.get_orders_by_userID(@user)
 
-  #runApriori(res_id,userOrders)
+  runApriori(res_id,userOrders)
 end
 
 #TODO icons
