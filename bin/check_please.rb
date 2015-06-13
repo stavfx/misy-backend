@@ -7,6 +7,8 @@ require 'mongo'
 require 'mongo_mapper'
 require 'json'
 require 'base64'
+require 'haml'
+
 
 #enable :sessions
 set :bind, '0.0.0.0'
