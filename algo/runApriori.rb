@@ -47,7 +47,7 @@ def runApriori(restid,userOrders)
 
   # add to outputArray only recommended items from current restaurant
   outA.each {
-    |key, value|tmp = key.to_s.split("=>");
+      |key, value|tmp = key.to_s.split("=>");
     tmp[tmp.length-1] = tmp.last.split(",").join("");
     tmp[0] = tmp[0].split(",");
     tmp = tmp.flatten(2);
@@ -56,32 +56,45 @@ def runApriori(restid,userOrders)
 
   # get 3 most accurate recommendations by checking which recommendation most similar to current user prev orders
   recommendedItem=[]
-  recommended=maxIntersection(userOrders,outputArray)
-  recommendedItem.push(recommended)
-  return recommended
+  recommendedItem=maxIntersection(userOrders,outputArray)
+  puts "---------------"
+  puts "recommended items:"
+  p recommendedItem
+  return recommendedItem
   #return recommendedItem
 end
 
 def maxIntersection(userOrders, recommendationArr)
   max=0
   recommendation=""
-
-  for cell in recommendationArr
-    tmp=cell.clone
-    tmp.delete(tmp.last)
-    p tmp
-    p cell
-    interArr=(tmp&userOrders)
-    interSize=interArr.length
-    p interSize
-    if interSize>max
-      max=interSize
-      recommendation=cell.last
+  count=0
+  i=0
+  del=0
+  outRecommendationArr=[]
+  for i in 0..3
+    for cell in recommendationArr
+      count=count+1
+      tmp=cell.clone
+      tmp.delete(tmp.last)
+      p tmp
+      p cell
+      interArr=(tmp&userOrders)
+      interSize=interArr.length
+      p interSize
+      if interSize>max
+        max=interSize
+        recommendation=cell.last
+        del=count
+      end
     end
+    recommendationArr.delete_at(del)
+    outRecommendationArr.push(recommendation)
+    i=0
+    del=0
   end
-  p recommendation
-  return recommendation
 
+  p  outRecommendationArr
+  return  outRecommendationArr
 end
 #MongoMapper.connection = Mongo::Connection.new('localhost')
 #MongoMapper.database = 'misy'
