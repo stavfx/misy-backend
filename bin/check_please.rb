@@ -188,5 +188,6 @@ end
 
 
 get '/api/test' do
-  send_file File.expand_path('file.txt', settings.public_folder)
+  # send_file File.expand_path('file.txt', settings.public_folder)
+  "hello"
 end
