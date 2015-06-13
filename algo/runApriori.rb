@@ -58,7 +58,6 @@ def runApriori(restid,userOrders)
   recommendedItem=[]
   recommended=maxIntersection(userOrders,outputArray)
   recommendedItem.push(recommended)
-  p recommended
   return recommended
   #return recommendedItem
 end
