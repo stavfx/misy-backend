@@ -102,9 +102,6 @@ class RestaurantMng
     return_message(true,city_arr)
   end
 
-  def self.get_menu_item_by_id(res_id,menu_item_id)
-   return Restaurant.all(:_id => res_id, "menu_items._id" => menu_item_id)
-  end
 
   def self.get_all_menu_items(restid)
     menuItems=Restaurant.where(:_id => restid).fields(:menu_items).collect(&:menu_items)

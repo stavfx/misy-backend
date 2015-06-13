@@ -151,7 +151,6 @@ get '/api/getRecommended/:res_id' do
   res_id = params[:res_id]
   userOrders= OrderMng.get_orders_by_userID(@user)
   recommended=runApriori(res_id,userOrders)
-  p RestaurantMng.get_menu_item_by_id(res_id,recommended.first)
   return_message(true,recommended).to_json
 end
 
