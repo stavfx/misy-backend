@@ -18,6 +18,7 @@ class MenuCategory
 
   key :_id,         String
   key :recommend,   Boolean
+  key :priority,    Integer
 end
 
 
@@ -35,15 +36,16 @@ class MenuItemMng
 
   # Return as an array of strings
   def self.get_all_menu_categories
-    menu_categories_arr = []
-    MenuCategory.all.each { |doc| menu_categories_arr << doc.id }
-    return_message(true,menu_categories_arr)
+    # menu_categories_arr = []
+    # MenuCategory.all.each { |doc| menu_categories_arr << doc.id }
+    return_message(true,MenuCategory.all)
   end
 
   def self.create_menu_category(params)
     menu_category = MenuCategory.create({
                                             :_id => params["menu_category"],
-                                            :recommend => params["recommend"]
+                                            :recommend => params["recommend"],
+                                            :priority => params["priority"]
                                         })
     return_message(true,menu_category.serializable_hash)
   end
