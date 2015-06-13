@@ -199,11 +199,13 @@ end
 
 # Handle GET-request (Show the upload form)
 get "/upload" do
+  content_type 'text/html'
   haml :upload
 end
 
 # Handle POST-request (Receive and save the uploaded file)
 post "/upload" do
+  content_type 'text/html'
   File.open('uploads/' + params['myfile'][:filename], "w") do |f|
     f.write(params['myfile'][:tempfile].read)
   end
