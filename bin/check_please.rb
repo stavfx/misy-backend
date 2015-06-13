@@ -20,7 +20,7 @@ MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
 
 
-before do
+before /api/ do
   content_type :json
   request.body.rewind
   json_params = request.body.read
