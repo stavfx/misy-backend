@@ -103,7 +103,7 @@ class RestaurantMng
   end
 
   def self.get_menu_item_by_id(res_id,menu_item_id)
-   return Restaurant.all(:_id => res_id, "menu_items.id" => menu_item_id)
+   return Restaurant.all(:_id => res_id, "menu_items._id" => menu_item_id)
   end
 
   def self.get_all_menu_items(restid)

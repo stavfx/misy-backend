@@ -149,12 +149,8 @@ end
 get '/api/getRecommended/:res_id' do
   return return_message(false,{},"No user logged in") if @user.nil?
   res_id = params[:res_id]
-  p res_id
-  puts "before get orders"
   userOrders= OrderMng.get_orders_by_userID(@user)
-  puts "Before apriori"
   recommended=runApriori(res_id,userOrders)
-  puts "finished apriori"
   p RestaurantMng.get_menu_item_by_id(res_id,recommended.first)
   return_message(true,recommended).to_json
 end

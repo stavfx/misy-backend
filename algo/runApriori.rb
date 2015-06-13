@@ -1,6 +1,5 @@
 require 'mongo_mapper'
 Dir['../lib/*.rb'].each do |file|
-  puts file
   require file
 end
 require 'apriori'
