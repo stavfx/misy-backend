@@ -156,7 +156,7 @@ get '/api/getRecommended/:res_id' do
   recommended=runApriori(res_id,userOrders)
   puts "finished apriori"
   p recommended
-  #return_message(true,recommended)
+  return_message(true,recommended).to_json
 end
 
 #TODO icons
