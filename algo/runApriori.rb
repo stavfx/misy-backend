@@ -41,7 +41,7 @@ def runApriori(restid,userOrders)
   outputArray = []
   orderedItems = getHash(restid)
   orderedItems = Apriori::ItemSet.new(orderedItems)
-  outA = orderedItems.mine(60, 60)
+  outA = orderedItems.mine(30, 60)
   # get all menu items of specific restaurant
   restItems=RestaurantMng.get_all_menu_items(restid)
 
