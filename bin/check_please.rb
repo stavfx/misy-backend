@@ -191,8 +191,8 @@ end
 
 get '/api/test' do
   # send_file File.expand_path('file.txt', settings.public_folder)
-  file = 'test'
-  file = File.join('/path', file)
+  file = 'download.jpg'
+  file = File.join('uploads', file)
   send_file(file, :disposition => 'attachment', :filename => File.basename(file))
 end
 
