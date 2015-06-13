@@ -149,6 +149,8 @@ end
 get '/api/getRecommended/:res_id' do
   return return_message(false,{},"No user logged in") if @user.nil?
   res_id = params[:res_id]
+  p res_id
+  p @user
   userOrders= OrderMng.get_orders_by_userID(@user)
 
   x=runApriori(res_id,userOrders)
