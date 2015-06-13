@@ -187,6 +187,6 @@ post '/api/logout' do
 end
 
 
-get '/api/test_image' do
+get '/api/test' do
   send_file File.expand_path('file.txt', settings.public_folder)
 end
