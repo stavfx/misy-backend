@@ -155,7 +155,7 @@ get '/api/getRecommended/:res_id' do
   puts "Before apriori"
   recommended=runApriori(res_id,userOrders)
   puts "finished apriori"
-  p recommended
+  p RestaurantMng.get_menu_item_by_id(res_id,recommended.first)
   return_message(true,recommended).to_json
 end
 
