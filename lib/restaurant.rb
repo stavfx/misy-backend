@@ -82,6 +82,7 @@ class RestaurantMng
 
   def self.get_restaurant_id_by_user(user)
     msg = get_restaurant_by_user(user)
+    return msg unless msg[:success]
     msg[:data] = msg[:data]._id.to_s
     return msg
   end
