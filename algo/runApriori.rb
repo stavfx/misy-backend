@@ -64,36 +64,46 @@ def runApriori(restid,userOrders)
 end
 
 def maxIntersection(userOrders, recommendationArr)
-  max=0
   recommendation=""
-  count=0
+  count=-1
   i=0
   del=0
   outRecommendationArr=[]
-  for i in 0..3
+  a =[]
+  for i in 0..2
+    max=0
+    puts "++++++++++++++++++++++"
+    p recommendationArr
+    puts "++++++++++++++++++++++"
+
     for cell in recommendationArr
       count=count+1
       tmp=cell.clone
       tmp.delete(tmp.last)
-      p tmp
-      p cell
       interArr=(tmp&userOrders)
       interSize=interArr.length
-      p interSize
-      if interSize>max
+      if interSize>=max
         max=interSize
         recommendation=cell.last
         del=count
       end
     end
-    recommendationArr.delete_at(del)
+    #recommendationArr.delete_at(del)
+    a=recommendationArr
+    recommendationArr=[]
     outRecommendationArr.push(recommendation)
-    i=0
+    count=-1
+    for cell in a
+      count=count+1
+      if cell.last != recommendation
+        recommendationArr.push(cell)
+      end
+    end
     del=0
+    count=-1
+    i=0
   end
-
-  p  outRecommendationArr
-  return  outRecommendationArr
+  return  outRecommendationArr.uniq
 end
 #MongoMapper.connection = Mongo::Connection.new('localhost')
 #MongoMapper.database = 'misy'
