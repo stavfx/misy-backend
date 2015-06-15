@@ -2,6 +2,9 @@ require 'mongo_mapper'
 require File.join(File.dirname(__FILE__), './utils')
 
 
+# Class that represents a menu item.
+# Each item has a Menu Category which defines the category within the menu:
+# Main Course, Desserts etc...
 class MenuItem
   include MongoMapper::EmbeddedDocument
 
@@ -13,6 +16,10 @@ class MenuItem
 end
 
 
+# Class that represents a Menu Category such as:
+# Drinks, Main Courses etc...
+# Recommend marks whether items under that category will be included in dish recommendation (f.e. Drinks: false, Main Courses: true).
+# Priority defines the order of categories in the menu - what will come first, second etc...
 class MenuCategory
   include MongoMapper::Document
 
@@ -21,6 +28,10 @@ class MenuCategory
   key :priority,    Integer
 end
 
+
+
+# Class that manages both Menu Items and their categories.
+# Used to create, update, find relevant MongoDB documents
 
 class MenuItemMng
 
@@ -36,8 +47,6 @@ class MenuItemMng
 
   # Return as an array of strings
   def self.get_all_menu_categories
-    # menu_categories_arr = []
-    # MenuCategory.all.each { |doc| menu_categories_arr << doc.id }
     return_message(true,MenuCategory.all)
   end
 

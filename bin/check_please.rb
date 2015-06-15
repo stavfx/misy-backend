@@ -10,10 +10,8 @@ require 'base64'
 require 'haml'
 
 
-#enable :sessions
 set :bind, '0.0.0.0'
 set :port, 80
-
 
 
 MongoMapper.connection = Mongo::Connection.new('localhost')
@@ -29,6 +27,9 @@ before /api/ do
   @user = (request.cookies["session"].nil?) ? nil : ::Base64.decode64(request.cookies["session"]).chomp!('salt')
   @dining_session = request.cookies["dining_session"]
 end
+
+
+################################################### Cookies ###################################################
 
 def set_user_in_cookies(response, user)
   response.set_cookie("session", :value => ::Base64.encode64(user+'salt'), :path => '/')
@@ -46,7 +47,6 @@ def delete_dining_session_from_cookies(response)
   response.set_cookie("dining_session", :value => nil, :path => '/')
 end
 
-
 get '/' do
   "Hi #{@user}, Welcome to Misy! :) #{@dining_session}"
 end
@@ -54,6 +54,9 @@ end
 get '/api/testCookies' do
 	cookies.to_json
 end
+
+
+################################################### Restaurants ###################################################
 
 get '/api/restaurants' do
   RestaurantMng.get_all().to_json
@@ -71,6 +74,8 @@ get '/api/cities' do
   RestaurantMng.get_all_cities().to_json
 end
 
+################################################### Services ###################################################
+
 post '/api/services' do
   ServiceMng.create(@request_params['service']).to_json
 end
@@ -78,6 +83,9 @@ end
 get '/api/services' do
   ServiceMng.get_all.to_json
 end
+
+
+################################################### MenuItems ###################################################
 
 get '/api/menuCategories' do
   MenuItemMng.get_all_menu_categories().to_json
@@ -87,6 +95,8 @@ post '/api/menuCategories' do
   MenuItemMng.create_menu_category(@request_params["menu_category"]).to_json
 end
 
+
+################################################### Orders ###################################################
 
 def order(request_params)
   return return_message(false,{},'Session not found') if @user.nil?
@@ -156,8 +166,8 @@ get '/api/getRecommended/:res_id' do
   return_message(true,recommended).to_json
 end
 
-#TODO icons
 
+################################################### Users ###################################################
 
 put '/api/user' do
   UserMng.update(@request_params).to_json
@@ -189,6 +199,8 @@ post '/api/logout' do
 end
 
 
+################################################### Icons ###################################################
+
 get '/api/restaurants/icon/:file' do
   file = File.join('uploads', params[:file])
   send_file(file, :disposition => 'attachment', :filename => File.basename(file))
@@ -207,7 +219,6 @@ post "/upload" do
   File.open('uploads/' + params['myfile'][:filename], "w") do |f|
     f.write(params['myfile'][:tempfile].read)
   end
-  # params['myfile'][:filename]
   full_icon_path = "http://stavfx.com/api/restaurants/icon/#{params['myfile'][:filename]}"
   res_id = params['myfile'][:filename][/(.*)\./,1]
   msg = RestaurantMng.update_icon(res_id,full_icon_path)

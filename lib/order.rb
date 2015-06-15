@@ -4,6 +4,14 @@ require 'date'
 require File.join(File.dirname(__FILE__), './utils')
 require 'securerandom'
 
+
+# Class that represents an order of either s Service request or Menu Items.
+# Contains information such as the user that ordered, the relevant restaurant, the dishes \ services ordered etc.
+#
+# Dining session: Since each order is individual but multiple orders can belong to the same event, we have a dining session.
+#                 Dining session is replaced when either the user requested a check or the user is ordering from a different restaurant.
+# State: 0 - active, 1 - not active \ handled, 2 - archived (services are not archived, but deleted)
+
 class Order
   include MongoMapper::Document
 
@@ -12,7 +20,7 @@ class Order
   key :table_num,       Integer
   key :menu_items,      Array
   key :service,         String
-  key :state,           Integer # 0 - active, 1 - not active, 2 - archived
+  key :state,           Integer
   key :dining_session,  String
   key :date,            Integer
 
@@ -21,9 +29,14 @@ end
 
 
 
+# Class that manages Orders.
+# Used to create, update, find relevant MongoDB documents
+
 class OrderMng
 
+  # Create a new order
   def self.create(params)
+    # If there is no dining session or user is ordering from a different restaurant, generate a new dining session
     if (params["dining_session"].nil? || (params["dining_session"].split('_').first != params["restaurant_id"]))
       params["dining_session"] = params["restaurant_id"]+'_'+SecureRandom.uuid
     end
@@ -42,11 +55,13 @@ class OrderMng
     return_message(true,data)
   end
 
+  # Update order's attributes. Mostly used to change order from active to not active
   def self.update(params)
     order = Order.find(params["id"])
     if order.nil?
       return_message(false,{},"No Order was found with id #{params["id"]}")
     else
+      # If the order contains a Service and is sent to archive - delete the order.
       if (!order.service.nil?) && params["state"].eql?('2')
         order.destroy
       else
@@ -71,10 +86,12 @@ class OrderMng
     return_message(true,{"services_orders" => services_orders, "dishes_orders" => dishes_orders})
   end
 
+  # Get all Restaurant's archived orders (only dishes)
   def self.get_orders_history_by_res(res_id)
     return_message(true,{"dishes_orders" => (Order.all(:restaurant_id => res_id, :state => 2))})
   end
 
+  # Get all user's orders (except services) and gather them by dining session
   def self.get_orders_history_by_user(user_id)
     orders_by_session = Hash.new {|h,k| h[k] = {"menu_items" => [],"user_id" => user_id, "date" => Time.now.to_i} }  # Hash of hashes
     Order.where(:user_id => user_id, :menu_items => { :$exists => true}, :menu_items => {:$not => {:$size => 0}}).each do |order|
@@ -85,6 +102,7 @@ class OrderMng
      return return_message(true,orders_by_session.values)
   end
 
+  # Send all Restaurant's not active \ handled orders to archive (change to state 2)
   def self.send_not_active_to_archive(res_id)
     Order.all(:restaurant_id => res_id).each do |order|
       next if order.state == 0
