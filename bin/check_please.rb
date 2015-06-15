@@ -18,7 +18,6 @@ set :port, 80
 
 MongoMapper.connection = Mongo::Connection.new('localhost')
 MongoMapper.database = 'misy'
-MongoMapper::Document.plugin(MongoMapper::Plugins::IdentityMap)
 
 
 before /api/ do
