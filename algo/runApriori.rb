@@ -38,7 +38,11 @@ end
 
 
 def getFinalRecommended(rest_items,items_to_filter)
+
   puts "Items to filter:"
+  p items_to_filter
+  puts "rest_items:"
+  p rest_items
   p items_to_filter
   frequency_hash = Hash.new(0)
   items_to_filter.each do |items_array|
@@ -82,6 +86,7 @@ def runApriori(restid,userOrders)
   recommendedItem=[]
   # recommendedItem=maxIntersection(userOrders,outputArray)
   recommendedItem=maxIntersection(userOrders,orderedItems)
+  return [] if recommendedItem.empty?
   recommendFinal = getFinalRecommended(restItems,recommendedItem)
   puts "---------------"
   puts "recommended items:"
@@ -93,7 +98,7 @@ def runApriori(restid,userOrders)
 end
 
 def maxIntersection(userOrders, recommendationArr)
-  recommendation=""
+  recommendation=[]
   count=-1
   i=0
   del=0
@@ -121,7 +126,7 @@ def maxIntersection(userOrders, recommendationArr)
     #recommendationArr.delete_at(del)
     # a=recommendationArr
     # recommendationArr=[]
-    outRecommendationArr.push(recommendation)
+    outRecommendationArr.push(recommendation) unless recommendation.empty?
     recommendationArr.delete(recommendation)
     # count=-1
     # for cell in a
