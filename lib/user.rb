@@ -8,6 +8,7 @@ require File.join(File.dirname(__FILE__), './utils')
 
 class User
   include MongoMapper::Document
+  plugin MongoMapper::Plugins::IdentityMap
 
   key :_id,           String
   key :first_name,    String

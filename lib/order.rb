@@ -6,6 +6,7 @@ require 'securerandom'
 
 class Order
   include MongoMapper::Document
+  plugin MongoMapper::Plugins::IdentityMap
 
   key :restaurant_id,   String
   key :user_id,         String
