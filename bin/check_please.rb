@@ -189,10 +189,8 @@ post '/api/logout' do
 end
 
 
-get '/api/test' do
-  # send_file File.expand_path('file.txt', settings.public_folder)
-  file = 'download.jpg'
-  file = File.join('uploads', file)
+get '/api/restaurants/icon/:file' do
+  file = File.join('uploads', params[:file])
   send_file(file, :disposition => 'attachment', :filename => File.basename(file))
 end
 
@@ -209,5 +207,11 @@ post "/upload" do
   File.open('uploads/' + params['myfile'][:filename], "w") do |f|
     f.write(params['myfile'][:tempfile].read)
   end
+
   return "The file was successfully uploaded!"
+end
+
+post '/test/:f' do
+  content_type 'text/html'
+  p params[:f]
 end
