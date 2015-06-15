@@ -28,10 +28,11 @@ def getCSV(restid)
 end
 
 # prepare hash for apriori
+# Note - not returning a hash anymore
 def getHash(restid)
   # get all ordered items of users who ordered in restaurant "restid"
   userItems=OrderMng.getAllUsersItemsByRestID(restid)
-  userItems=Hash[userItems.map.with_index { |value, index| [index, value] }]
+  # userItems=Hash[userItems.map.with_index { |value, index| [index, value] }]
   return userItems
 end
 
@@ -39,25 +40,28 @@ end
 def runApriori(restid,userOrders)
   outputArray = []
   orderedItems = getHash(restid)
-  orderedItems = Apriori::ItemSet.new(orderedItems)
-  puts "before Apriori run"
-  outA = orderedItems.mine(80, 85)
-  puts "after Apriori run"
+  puts "Ordered items:"
+  p orderedItems
+  # orderedItems = Apriori::ItemSet.new(orderedItems)
+  # puts "before Apriori run"
+  # outA = orderedItems.mine(80, 85)
+  # puts "after Apriori run"
   # get all menu items of specific restaurant
   restItems=RestaurantMng.get_all_menu_items(restid)
 
-  # add to outputArray only recommended items from current restaurant
-  outA.each {
-      |key, value|tmp = key.to_s.split("=>");
-    tmp[tmp.length-1] = tmp.last.split(",").join("");
-    tmp[0] = tmp[0].split(",");
-    tmp = tmp.flatten(2);
-    outputArray.push(tmp) if restItems.include?(tmp.last);
-  }
+  # add to outputArray only items from current restaurant
+  # outA.each {
+  #     |key, value|tmp = key.to_s.split("=>");
+  #   tmp[tmp.length-1] = tmp.last.split(",").join("");
+  #   tmp[0] = tmp[0].split(",");
+  #   tmp = tmp.flatten(2);
+  #   outputArray.push(tmp) if restItems.include?(tmp.last);
+  # }
 
   # get 3 most accurate recommendations by checking which recommendation most similar to current user prev orders
   recommendedItem=[]
-  recommendedItem=maxIntersection(userOrders,outputArray)
+  # recommendedItem=maxIntersection(userOrders,outputArray)
+  recommendedItem=maxIntersection(userOrders,orderedItems)
   puts "---------------"
   puts "recommended items:"
   p recommendedItem
@@ -75,7 +79,7 @@ def maxIntersection(userOrders, recommendationArr)
   for i in 0..2
     max=0
     puts "++++++++++++++++++++++"
-    p recommendationArr
+    p
     puts "++++++++++++++++++++++"
 
     for cell in recommendationArr
