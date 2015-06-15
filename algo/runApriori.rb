@@ -89,13 +89,9 @@ def maxIntersection(userOrders, recommendationArr)
       end
     end
     #recommendationArr.delete_at(del)
-    if max == 0
-      outRecommendationArr.push("")
-    else
-      outRecommendationArr.push(recommendation)
-    end
     a=recommendationArr
     recommendationArr=[]
+    outRecommendationArr.push(recommendation)
     count=-1
     for cell in a
       count=count+1
@@ -107,8 +103,7 @@ def maxIntersection(userOrders, recommendationArr)
     count=-1
     i=0
   end
-  outRecommendationArr.uniq!.compact!
-  return  outRecommendationArr
+  return  outRecommendationArr.uniq
 end
 #MongoMapper.connection = Mongo::Connection.new('localhost')
 #MongoMapper.database = 'misy'
