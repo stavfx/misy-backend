@@ -38,15 +38,19 @@ end
 
 
 def getFinalRecommended(rest_items,items_to_filter)
+  puts "Items to filter:"
+  p items_to_filter
   frequency_hash = Hash.new(0)
   items_to_filter.each do |items_array|
     arr = (items_array&rest_items)
     arr.each {|item| frequency_hash[item] += 1}
   end
+  puts "frequency_hash:"
+  p frequency_hash
   final_arr = []
   for i in 0..2
     frequency_hash.max_by do |k,v|
-      final_arr[i] = v
+      final_arr[i] = k
       frequency_hash.delete(k)
     end
   end
