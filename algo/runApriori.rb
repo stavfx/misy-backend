@@ -36,6 +36,23 @@ def getHash(restid)
   return userItems
 end
 
+
+def getFinalRecommended(rest_items,items_to_filter)
+  frequency_hash = Hash.new(0)
+  items_to_filter.each do |items_array|
+    arr = (items_array&rest_items)
+    arr.each {|item| frequency_hash[item] += 1}
+  end
+  final_arr = []
+  for i in 0..2
+    frequency_hash.max_by do |k,v|
+      final_arr[i] = v
+      frequency_hash.delete(k)
+    end
+  end
+  return final_arr
+end
+
 # run Apriori algorithm
 def runApriori(restid,userOrders)
   outputArray = []
@@ -62,11 +79,14 @@ def runApriori(restid,userOrders)
   recommendedItem=[]
   # recommendedItem=maxIntersection(userOrders,outputArray)
   recommendedItem=maxIntersection(userOrders,orderedItems)
+  recommendFinal = getFinalRecommended(restItems,recommendedItem)
   puts "---------------"
   puts "recommended items:"
-  p recommendedItem
-  return recommendedItem
+  # p recommendedItem
+  # return recommendedItem
   #return recommendedItem
+  p recommendFinal
+  return recommendFinal
 end
 
 def maxIntersection(userOrders, recommendationArr)
@@ -90,27 +110,32 @@ def maxIntersection(userOrders, recommendationArr)
       interSize=interArr.length
       if interSize>=max
         max=interSize
-        recommendation=cell.last
-        del=count
+        # recommendation=cell.last
+        recommendation = cell
+        # del=count
       end
     end
     #recommendationArr.delete_at(del)
-    a=recommendationArr
-    recommendationArr=[]
+    # a=recommendationArr
+    # recommendationArr=[]
     outRecommendationArr.push(recommendation)
+    recommendationArr.delete(recommendation)
+    # count=-1
+    # for cell in a
+    #   count=count+1
+    #   if cell.last != recommendation
+    #     recommendationArr.push(cell)
+    #   end
+    # end
+    # del=0
     count=-1
-    for cell in a
-      count=count+1
-      if cell.last != recommendation
-        recommendationArr.push(cell)
-      end
-    end
-    del=0
-    count=-1
-    i=0
+    # i=0
   end
   return  outRecommendationArr.uniq
 end
+
+
+
 #MongoMapper.connection = Mongo::Connection.new('localhost')
 #MongoMapper.database = 'misy'
 
