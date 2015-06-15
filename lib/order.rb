@@ -90,6 +90,7 @@ class OrderMng
     Order.all(:restaurant_id => res_id).each do |order|
       next if order.state == 0
       hash_order = order.serializable_hash
+      p hash_order
       hash_order["state"] = '2'
       @response = update(hash_order)
       if !@response[:success]

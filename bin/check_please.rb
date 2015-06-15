@@ -211,6 +211,6 @@ post "/upload" do
   full_icon_path = "http://stavfx.com/api/restaurants/icon/#{params['myfile'][:filename]}"
   res_id = params['myfile'][:filename][/(.*)\./,1]
   msg = RestaurantMng.update_icon(res_id,full_icon_path)
-  return msg[:data]
+  return msg[:error_message]
 end
 
