@@ -53,9 +53,12 @@ def getFinalRecommended(rest_items,items_to_filter)
   p frequency_hash
   final_arr = []
   for i in 0..2
-    max = frequency_hash.max[0]
-    final_arr << max
-    frequency_hash.delete(max)
+    max_k_v = frequency_hash.max
+    if !max_k_v.nil?
+      max = max_k_v[0]
+      final_arr << max
+      frequency_hash.delete(max)
+    end
   end
   return final_arr
 end
