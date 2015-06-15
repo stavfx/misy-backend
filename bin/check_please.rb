@@ -207,10 +207,10 @@ post "/upload" do
   File.open('uploads/' + params['myfile'][:filename], "w") do |f|
     f.write(params['myfile'][:tempfile].read)
   end
-  params['myfile'][:filename]
-  # full_icon_path = "http://stavfx.com/api/restaurants/icon/#{params['myfile'][:filename]}"
-  # res_id = params['myfile'][:filename][/(.*)\./,1]
-  # msg = RestaurantMng.update_icon(res_id,full_icon_path)
-  # return msg
+  # params['myfile'][:filename]
+  full_icon_path = "http://stavfx.com/api/restaurants/icon/#{params['myfile'][:filename]}"
+  res_id = params['myfile'][:filename][/(.*)\./,1]
+  msg = RestaurantMng.update_icon(res_id,full_icon_path)
+  return msg[:data]
 end
 
