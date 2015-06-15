@@ -11,6 +11,7 @@ class Restaurant
   key :address,       String
   key :p_number,      String
   key :desc,          String
+  key :icon,          String
   many :menu_items
 end
 
@@ -45,6 +46,7 @@ class RestaurantMng
                               :address       => params["address"],
                               :p_number      => params["p_number"],
                               :desc          => params["desc"],
+                              :icon          => params["icon"],
                               :menu_items    => menu_items
                           )
       res.save
@@ -54,6 +56,16 @@ class RestaurantMng
 
   end
 
+  def self.update_icon(res_id,icon)
+    res = Restaurant.find(res_id)
+    if res.nil?
+      return_message(false,{},"No restaurant was found with id #{params["id"]}")
+    else
+      res.update_attributes(:icon => icon)
+      res.save
+      return_message(true,{},"Success")
+    end
+  end
 
 
   def self.get_all()

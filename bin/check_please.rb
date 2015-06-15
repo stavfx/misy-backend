@@ -202,16 +202,13 @@ get "/upload" do
 end
 
 # Handle POST-request (Receive and save the uploaded file)
-post "/upload" do
+post "/upload/:res_id" do
   content_type 'text/html'
   File.open('uploads/' + params['myfile'][:filename], "w") do |f|
     f.write(params['myfile'][:tempfile].read)
   end
-
-  return "The file was successfully uploaded!"
+  full_icon_path = "http://stavfx.com/api/restaurants/icon/#{params['myfile'][:filename]}"
+  msg = RestaurantMng.update_icon(params[:res_id],full_icon_path)
+  return msg
 end
 
-post '/test/:f' do
-  content_type 'text/html'
-  p params[:f]
-end
