@@ -4,7 +4,6 @@ require File.join(File.dirname(__FILE__), './menuItems')
 
 class Restaurant
   include MongoMapper::Document
-  plugin MongoMapper::Plugins::IdentityMap
 
   key :name,          String
   key :admin_user_id, String
@@ -18,7 +17,6 @@ end
 
 class City
   include MongoMapper::Document
-  plugin MongoMapper::Plugins::IdentityMap
 
   key :_id, String
 end

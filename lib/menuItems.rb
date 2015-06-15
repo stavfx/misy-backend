@@ -4,7 +4,6 @@ require File.join(File.dirname(__FILE__), './utils')
 
 class MenuItem
   include MongoMapper::EmbeddedDocument
-  plugin MongoMapper::Plugins::IdentityMap
 
   key :name,             String
   key :description,      String
@@ -16,7 +15,6 @@ end
 
 class MenuCategory
   include MongoMapper::Document
-  plugin MongoMapper::Plugins::IdentityMap
 
   key :_id,         String
   key :recommend,   Boolean
