@@ -17,7 +17,7 @@ class Order
 
   key :restaurant_id,   String
   key :user_id,         String
-  key :table_num,       Integer
+  key :table_num,       String
   key :menu_items,      Array
   key :service,         String
   key :state,           Integer
